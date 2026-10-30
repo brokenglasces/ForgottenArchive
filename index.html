@@ -2,21 +2,16 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap">
 <style>
-/* 레이아웃: 페이지 한가운데 아이폰 13 한 대(390x844). 전체 톤은 블랙·그레이·화이트 모노톤 */
+/* 레이아웃: 페이지 한가운데 아이폰 13 한 대(390x844). 실제 iOS 컬러감 반영 */
 :root{
   --bg:#d9dadd; --fg:#111214; --muted:#5d6068; --chip:#f1f1f3; --chip-line:#b9bbc2; --accent:#111214;
-  --ph:-apple-system,BlinkMacSystemFont,"SF Pro Text","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+  --ph:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0a0a0b;--fg:#e8e8ea;--muted:#85878f;--chip:#17171a;--chip-line:#2c2c31;--accent:#e8e8ea;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0a0a0b;--fg:#e8e8ea;--muted:#85878f;--chip:#17171a;--chip-line:#2c2c31;--accent:#e8e8ea;color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font-family:var(--ph);padding-block:20px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 #stage{display:flex;flex-direction:column;align-items:center;gap:18px}
 #fit{position:relative}
-.tools{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.tools button{font:500 14px var(--ph);color:var(--fg);background:var(--chip);border:1px solid var(--chip-line);border-radius:10px;padding:9px 14px;cursor:pointer}
-.tools button:hover{border-color:var(--accent)}
-.tools button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.hint{font-size:13px;color:var(--muted);text-align:center;max-width:40ch;line-height:1.55;margin:0}
 
 /* ---------- 기기 ---------- */
 #phone{position:absolute;left:0;top:0;width:420px;height:874px;padding:3px;border-radius:62px;transform-origin:0 0;
@@ -118,6 +113,12 @@ body.bare .sbtn{display:none}
 .cmp .go{width:30px;height:30px;border-radius:50%;border:0;background:#f2f2f3;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
 .cmp .go[disabled]{background:var(--k4);cursor:default}
 .cmp .go svg{width:16px;height:16px;fill:#0b0b0c}
+
+/* ---------- 캘린더 앱 ---------- */
+.cal-wrap{padding:16px;display:flex;flex-direction:column;gap:12px}
+.cal-card{background:var(--k2);border-radius:16px;padding:16px;border:1px solid var(--line)}
+.cal-date-title{font-size:20px;font-weight:700;margin-bottom:8px;color:#fff}
+.cal-evt{background:rgba(255,255,255,.08);border-left:4px solid #ff453a;padding:10px 12px;border-radius:8px;font-size:14.5px;line-height:1.4}
 
 /* ---------- 카카오톡 ---------- */
 .khead{flex:none;display:flex;justify-content:space-between;align-items:center;padding:6px 16px 8px}
@@ -378,6 +379,25 @@ button:focus-visible{outline:2px solid #fff;outline-offset:-2px}
             </div>
           </section>
 
+          <!-- 캘린더 앱 -->
+          <section class="app" id="app-calendar">
+            <div class="pad47"></div>
+            <div class="lt">캘린더</div>
+            <div class="scroll">
+              <div class="cal-wrap">
+                <div class="cal-card">
+                  <div class="cal-date-title">12월 4일 (금)</div>
+                  <div class="cal-evt"><b>백이령과의 첫 만남</b><br>자정, 동거 시작 및 방 문 체크</div>
+                </div>
+                <div class="cal-card">
+                  <div class="cal-date-title">목요일 밤 11시</div>
+                  <div class="cal-evt"><b>세라와의 약속</b><br>같은 자리, 같은 시간 (나가지 말 것)</div>
+                </div>
+              </div>
+            </div>
+            <div class="hs"></div>
+          </section>
+
           <!-- 카카오톡 -->
           <section class="app" id="app-kakao">
             <div class="view" id="kk-main">
@@ -412,7 +432,7 @@ button:focus-visible{outline:2px solid #fff;outline-offset:-2px}
               <div class="sbh"><span class="wm">SOMEBODY</span><span class="sbr" id="sb-count"></span></div>
               <div class="scroll" id="sb-rows"></div>
               <nav class="ktabs sbtabs">
-                <button data-act="sb-tab" data-tab="discover" id="st-discover"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm0 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>탐색</button>
+                <button data-act="sb-tab" data-tab="discover" id="st-discover"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm0 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6 z"/></svg>탐색</button>
                 <button data-act="sb-tab" data-tab="chats" id="st-chats"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>대화<span class="bd" id="sb-tb"></span></button>
               </nav>
             </div>
@@ -436,7 +456,7 @@ button:focus-visible{outline:2px solid #fff;outline-offset:-2px}
           <section class="app" id="app-photos">
             <div class="pad47"></div>
             <div class="lt">보관함</div>
-            <div class="phs" id="ph-sub"></div>
+            <div class="phs" id="ph-sub">12개의 항목</div>
             <div class="scroll" id="ph-grid"></div>
             <div class="hs"></div>
             <div id="pviewer" hidden>
@@ -472,32 +492,25 @@ button:focus-visible{outline:2px solid #fff;outline-offset:-2px}
       </div>
     </div>
   </div>
-  <div class="tools">
-    <button id="btn-incoming">수신 전화 테스트</button>
-    <button id="btn-reset">처음 상태로</button>
-  </div>
-  <p class="hint">성윤오의 휴대폰입니다. 화면을 눌러 잠금을 풀고, 아래 홈 바로 홈 화면에 돌아갈 수 있어요.</p>
 </main>
 
 <script>
 (()=>{
 'use strict';
 
-/* =====================================================================
-   ★ 여기만 고치면 돼요: 연락처 · 답장 · 통화 대사 · 사진 · 메모 · 썸바디 프로필
-   - rules: 위에서부터 차례로 검사. 보낸 문자에 match 단어가 하나라도 들어 있으면
-     그 rule의 reply가 순서대로 도착해요 (공백은 무시). 구체적인 단어를 위쪽에 두세요.
-   - fallback: 어떤 rule에도 안 걸릴 때의 답장 ([]면 답장 없음)
-   - saved:false 는 연락처에 저장되지 않은 번호 (문자·카톡에는 번호나 닉네임으로 보임)
-   - call.lines: 통화 대사. wait = 대사 전 대기(ms), who = 'them'(기본) / 'me' / 'sys'
-   - call.hangupAfter: 마지막 대사 뒤 몇 ms 후 상대가 끊을지 (null이면 안 끊음)
-   ===================================================================== */
 const CONFIG = {
   meName: '성윤오',
   contacts: [
     { id:'ryung', name:'백이령', number:'010-8800-1204',
       sms:{
-        history:[{from:'them', text:'문 안 잠갔던데요. 일부러예요?', ago:130},{from:'me', text:'곧 들어갑니다.', ago:122}],
+        history:[
+          {from:'them', text:'문 안 잠그는 건 습관? 허술해라.......', ago:130},
+          {from:'me', text:'능숙한 거란 생각은 안 하고.', ago:125},
+          {from:'them', text:'범죄자가 피해에 허술하기도 해요?', ago:124},
+          {from:'me', text:'나 당신 앞에선 피해자기도 하지 않나?', ago:123},
+          {from:'them', text:'그럼, 난 피의자구?', ago:122},
+          {from:'me', text:'그렇지, 못된 년아.......', ago:121}
+        ],
         rules:[
           {match:['보고싶','보고 싶'], reply:['보고 싶어요.','...말해놓고 보니까 좀 웃기네요']},
           {match:['어디'], reply:['알려주면 재미없잖아요','근데 생각보다 가까워요']},
@@ -510,7 +523,7 @@ const CONFIG = {
       kakao:{
         status:'보고 있어요',
         history:[
-          {from:'me', text:'지금 어디입니까.', ago:40},
+          {from:'me', text:'어디예요?', ago:40},
           {from:'them', text:'알려주면 재미없잖아요', ago:38},
           {from:'them', text:'보지 않으려 해도 보고 싶어지죠, 내가?', ago:3}
         ],
@@ -528,13 +541,11 @@ const CONFIG = {
         ringMs:2200, hangupAfter:3200,
         lines:[
           {text:'받았네요. 안 받을 줄 알았는데.', wait:700},
-          {who:'me', text:'용건만 하세요.', wait:1700},
-          {text:'용건이요? 별거 없어요. 그냥 목소리가 듣고 싶었어요.', wait:1700},
-          {who:'me', text:'...지금 어디입니까.', wait:2000},
-          {text:'알면서 왜 물어요.', wait:1800},
-          {text:'보고 싶어요.', wait:2600},
-          {who:'me', text:'......', wait:1600},
-          {text:'대답 안 해도 돼요. 들었으니까.', wait:2000}
+          {who:'me', text:'사건 현장에도 쉬는 시간은 있어요.', wait:1700},
+          {text:'그냥 목소리 듣고 싶어서. 다른 여자가 그리 좋아?', wait:1700},
+          {who:'me', text:'만나서 대답할까? 피 대신 널 낭자해야 덜 물을래?', wait:2000},
+          {text:'알면서 왜 물어? 보고 싶어요.', wait:1800},
+          {who:'me', text:'늦을 일 없어요.', wait:2600}
         ],
         incomingLines:[
           {text:'여보세요? 말 안 해도 돼요. 숨소리로 알 수 있으니까.', wait:800},
@@ -559,15 +570,12 @@ const CONFIG = {
       call:{
         ringMs:2000, hangupAfter:2200,
         lines:[
-          {text:'박진호입니다. 성윤오 씨, 맞으시죠?', wait:800},
-          {text:'접속 기록 몇 건 때문에 여쭙겠습니다.', wait:1900},
-          {text:'목요일 밤 11시쯤, 어디 계셨습니까.', wait:2200},
-          {who:'me', text:'...집에 있었습니다.', wait:2000},
+          {text:'박진호입니다. 성윤오 씨, 맞으시죠? 접속 기록 몇 건 때문에 여쭙겠습니다. 목요일 밤 11시쯤, 어디 계셨습니까.', wait:800},
+          {who:'me', text:'집에... 있었는데요? 동거인도 있어요.', wait:2000},
           {text:'그렇습니까. 일단 알겠습니다. 또 연락드리겠습니다.', wait:2200}
         ]
       }
     },
-    /* ---- 저장되지 않은 번호들 ---- */
     { id:'u5527', name:'010-5527-9031', saved:false, ini:'?', number:'010-5527-9031',
       sms:{
         unread:1,
@@ -686,7 +694,6 @@ const CONFIG = {
     }
   ],
 
-  /* ---- 썸바디 앱: 낯선 사용자 프로필 ---- */
   somebody: [
     { id:'p_walk', name:'밤산책', dist:'40m', age:'27', seed:41, matched:true, unread:1,
       bio:'불 꺼진 골목을 좋아해요. 같이 걸어줄 사람.', tags:['야행성','조용한 사람'],
@@ -730,36 +737,20 @@ const CONFIG = {
     }
   ],
 
-  /* ---- 사진 (모노톤 갤러리) ---- */
-  photos:[
-    {kind:'city', seed:3,  date:'10월 29일 23:12', place:'마포구 · 옥상', cap:'야간 근무 끝. 불 켜진 창이 몇 개인지 세어 봤다.'},
-    {kind:'door', seed:5,  date:'10월 29일 22:48', place:'서교동', cap:'412호. 문틈 아래 불빛. 아직 안 잤다.'},
-    {kind:'map',  seed:7,  date:'10월 27일 01:20', place:'작업용 캡처', cap:'반경 200m 로그. 겹치는 구간만 표시.'},
-    {kind:'figure',seed:9, date:'10월 25일 23:55', place:'골목', cap:'초점이 나갔다. 일부러는 아니다.'},
-    {kind:'rain', seed:11, date:'10월 24일 21:03', place:'택시 안', cap:'비. 창밖 불빛이 전부 번졌다.'},
-    {kind:'paper',seed:13, date:'10월 22일 04:10', place:'메모 사진', cap:'지우기 전에 한 장만 남겨 둔다.'},
-    {kind:'stairs',seed:15,date:'10월 20일 00:31', place:'비상계단', cap:'7층에서 내려다본 계단. 소리가 잘 울린다.'},
-    {kind:'car',  seed:17, date:'10월 18일 02:44', place:'국도', cap:'앞차 미등이 한참 따라왔다.'},
-    {kind:'city', seed:19, date:'10월 15일 05:20', place:'한강 북단', cap:'새벽. 아무도 없는 줄 알았다.'},
-    {kind:'door', seed:21, date:'10월 12일 23:41', place:'현관', cap:'이령의 방 문. 3cm 열려 있다.'},
-    {kind:'figure',seed:23,date:'10월 9일 22:10',  place:'지하철 3호선', cap:'막차. 맞은편 사람이 계속 이쪽을 봤다.'},
-    {kind:'map',  seed:25, date:'10월 3일 03:02',  place:'작업용 캡처', cap:'#0412 접속 위치. 이틀째 같은 자리.'}
-  ],
+  photos:[],
 
-  /* ---- 메모 (locked:true 는 4자리 번호 필요) ---- */
   notes:[
-    {id:'n1', title:'이령', ago:130, text:'첫 만남: 12월 4일.\n\n같이 사는 건 편해서가 아니라 감시하기 쉬워서다. 저쪽도 같은 생각일 것.\n\n오늘도 내 방 문이 3cm 열려 있었다. 내가 닫은 적 없는데.'},
-    {id:'n2', title:'규칙', ago:900, text:'하나. 번호는 한 번만 쓴다.\n둘. 이름을 먼저 묻지 않는다.\n셋. 같은 장소에 두 번 가지 않는다.\n넷. 이령에게는 말하지 않는다.\n   (...이미 알고 있을 것 같다)'},
-    {id:'n3', title:'썸바디 로그', ago:2000, text:'반경 알림: 200m 이내 ping\n접속 로그: 매일 04:00 자동 삭제\n테스트 계정 #0412 — 지우지 말 것\n\n오늘 새로 들어온 사용자 중 거리 0m가 하나 있다.\n0m라는 건 불가능한데.'},
-    {id:'n4', title:'목요일', ago:400, text:'목요일 밤 11시.\n세라는 같은 자리에서 기다린다고 했다.\n안 갈 것. 가면 안 된다.\n\n(그런데 왜 일정에 적어 놨지)'},
+    {id:'n1', title:'이령', ago:130, text:'첫 만남: 12월 4일.\n\n동거의 목적은 감시. 같은 생각일 것.\n\n오늘도 방 문이 3cm 열려 있었다. 닫은 적 없는데. 수몰처럼 몰려오는 여자? 허술한 건지, 허술한 척을 하는 건지. 도무지 알 수 없다. 죽이고 싶은 건가. 죽이려고 드는 건가. 깨끗한 척은 하지 말아, 질색이야....'},
+    {id:'n2', title:'규칙', ago:900, text:'하나. 번호는 한 번만 쓴다.\n둘. 이름을 먼저 묻지 않는다.\n셋. 같은 장소에 두 번 가지 않는다.\n넷. 이령에게는 말하지 않는다.'},
+    {id:'n3', title:'썸바디 로그', ago:2000, text:'반경 알림: 200m 이내 ping\n접속 로그: 매일 04:00 자동 삭제\n테스트 계정 #0412 — 지우지 말 것\n\n오늘 새로 들어온 사용자 중 거리 0m 존재.\n 불가능한데.'},
+    {id:'n4', title:'목요일', ago:400, text:'밤 11시.'},
     {id:'n5', title:'장보기', ago:3000, text:'계란\n우유\n세제\n전구 (복도)'},
-    {id:'n6', title:'잠긴 메모', ago:5000, locked:true, code:'1204', text:'12.04 — 그날 밤 사진은 지웠지만 클라우드에는 남아 있다.\n\n이령이 알고 있다면 이미 끝난 게임이다.\n\n"보고 싶다"는 말은 협박일까, 진심일까. 어느 쪽이든 나는 답을 못 했다.'}
+    {id:'n6', title:'잠긴 메모', ago:5000, locked:true, code:'1204', text:'12.04 — 터진 뺨에 얼굴을 파묻고 싶다 섹스!!! 죽도록 하고 싶어 좋아하려나?? 피 냄새가 났던 것 같다 물들어 있었나??? 뺨이 발갰나???\n\n하얀 살에 귀추를 묻고 싶어 헤집고 싶어 빌붙고 싶어 여기저기 씹어 놓아 경계 없이 사랑하고 싶어 씨발년 허물어지지 않는 년 비싼년 넌 뭐가 그리 잘났어 뭐가 그렇게 귀해 뭐가\n\n죽여놓지 못해 아쉽다'}
   ],
 
   unknownCall:{ ringMs:1600, hangupAfter:2500,
     lines:[{who:'sys', text:'지금 거신 전화번호는 없는 번호입니다. 다시 확인하시고 걸어주십시오.', wait:900}] },
 
-  // 처음 보이는 최근 통화 (ago=분 전, count=연속 횟수). number를 안 쓰면 id 연락처의 번호
   recents:[
     {number:'010-5527-9031', dir:'missed', ago:16, count:3},
     {id:'ryung', dir:'missed', ago:52},
@@ -772,7 +763,6 @@ const CONFIG = {
   ],
   incomingFrom:'ryung',
 
-  // 잠금을 푼 뒤 자동으로 도착하는 메시지 (at = 잠금 해제 후 ms)
   events:[
     {at:9000,  app:'kakao', id:'ryung', lines:['지금 방에서 나올 때 문소리 조심해요','들켜도 상관없긴 하지만']},
     {at:24000, app:'sms',   id:'u5527', lines:['10시 40분이에요.']},
@@ -780,7 +770,6 @@ const CONFIG = {
   ]
 };
 
-/* ============================ 엔진 ============================ */
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -808,73 +797,21 @@ const callName=(c,number)=>c?c.name:fmtNum(number);
 
 const PH='M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z';
 
-/* ---------- 모노톤 앱 아이콘 ---------- */
+/* 실제 아이폰 기본 앱 색감 반영 아이콘 */
 const IC={
-  phone:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#ececee"/><path transform="translate(14 14) scale(1.4)" fill="#0b0b0c" d="${PH}"/></svg>`,
-  sms:`<svg viewBox="0 0 60 60"><defs><linearGradient id="gs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8d8d93"/><stop offset="1" stop-color="#46464b"/></linearGradient></defs><rect width="60" height="60" fill="url(#gs)"/><ellipse cx="30" cy="28" rx="18" ry="14.5" fill="#f2f2f3"/><path d="M17 38l-4 9 11-5z" fill="#f2f2f3"/></svg>`,
-  kakao:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#26262a"/><ellipse cx="30" cy="28" rx="18" ry="14.5" fill="#f2f2f3"/><path d="M21 40l-2 9 11-6z" fill="#f2f2f3"/><circle cx="23" cy="28" r="2" fill="#26262a"/><circle cx="30" cy="28" r="2" fill="#26262a"/><circle cx="37" cy="28" r="2" fill="#26262a"/></svg>`,
-  sb:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#000"/><circle cx="30" cy="30" r="23" fill="none" stroke="#fff" stroke-opacity=".28"/><circle cx="30" cy="30" r="15" fill="none" stroke="#fff" stroke-opacity=".6"/><circle cx="30" cy="30" r="5" fill="#fff"/></svg>`,
-  photos:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#e6e6e8"/><g opacity=".9"><circle cx="30" cy="19" r="9" fill="#222"/><circle cx="41" cy="30" r="9" fill="#6d6d73"/><circle cx="30" cy="41" r="9" fill="#a8a8ae"/><circle cx="19" cy="30" r="9" fill="#444"/></g></svg>`,
-  camera:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#8b8b90"/><rect x="9" y="17" width="42" height="28" rx="6" fill="#222225"/><circle cx="30" cy="31" r="10" fill="#5e5e63"/><circle cx="30" cy="31" r="6" fill="#111"/><rect x="38" y="13" width="8" height="5" rx="2" fill="#222225"/></svg>`,
-  maps:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#2b2b2e"/><path d="M0 40L60 20v10L0 50z" fill="#4a4a4f"/><path d="M34 0h8v60h-8z" fill="#3a3a3e"/><circle cx="24" cy="26" r="7" fill="#f2f2f3"/><circle cx="24" cy="26" r="2.6" fill="#2b2b2e"/></svg>`,
-  weather:`<svg viewBox="0 0 60 60"><defs><linearGradient id="gw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3a3f"/><stop offset="1" stop-color="#8c8c92"/></linearGradient></defs><rect width="60" height="60" fill="url(#gw)"/><circle cx="22" cy="23" r="9" fill="#d8d8dc"/><path d="M18 44a8 8 0 0 1 2-15.7 11 11 0 0 1 21 2.4A6.7 6.7 0 0 1 40 44z" fill="#fff"/></svg>`,
-  clock:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#000"/><circle cx="30" cy="30" r="22" fill="#f2f2f3"/><path d="M30 14v17l10 6" stroke="#000" stroke-width="3" stroke-linecap="round" fill="none"/></svg>`,
-  notes:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#e4e4e6"/><rect width="60" height="17" fill="#6d6d73"/><path d="M10 29h40M10 38h40M10 47h26" stroke="#9a9aa0" stroke-width="2"/></svg>`,
-  settings:`<svg viewBox="0 0 60 60"><defs><linearGradient id="gg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9b9be"/><stop offset="1" stop-color="#76767c"/></linearGradient></defs><rect width="60" height="60" fill="url(#gg)"/><circle cx="30" cy="30" r="17" fill="none" stroke="#2a2a2d" stroke-width="5" stroke-dasharray="5.34 5.34"/><circle cx="30" cy="30" r="13" fill="#2a2a2d"/><circle cx="30" cy="30" r="6" fill="#a5a5ab"/></svg>`
+  phone:`<svg viewBox="0 0 60 60"><rect width="60" height="60" rx="14" fill="#34c759"/><path transform="translate(12 12) scale(1.5)" fill="#fff" d="${PH}"/></svg>`,
+  sms:`<svg viewBox="0 0 60 60"><rect width="60" height="60" rx="14" fill="#32d74b"/><ellipse cx="30" cy="28" rx="18" ry="14.5" fill="#fff"/><path d="M17 38l-4 9 11-5z" fill="#fff"/></svg>`,
+  kakao:`<svg viewBox="0 0 60 60"><rect width="60" height="60" rx="14" fill="#fee500"/><ellipse cx="30" cy="28" rx="18" ry="14.5" fill="#000"/><path d="M21 40l-2 9 11-6z" fill="#000"/><circle cx="23" cy="28" r="2" fill="#fee500"/><circle cx="30" cy="28" r="2" fill="#fee500"/><circle cx="37" cy="28" r="2" fill="#fee500"/></svg>`,
+  sb:`<svg viewBox="0 0 60 60"><rect width="60" height="60" rx="14" fill="#1c1c1e"/><circle cx="30" cy="30" r="20" fill="none" stroke="#fff" stroke-opacity=".3"/><circle cx="30" cy="30" r="12" fill="none" stroke="#fff" stroke-opacity=".7"/><circle cx="30" cy="30" r="4" fill="#fff"/></svg>`,
+  photos:`<svg viewBox="0 0 60 60"><rect width="60" height="60" rx="14" fill="#fff"/><g transform="translate(6 6)"><circle cx="18" cy="12" r="7" fill="#ff9f0a"/><circle cx="30" cy="18" r="7" fill="#30b0c7"/><circle cx="18" cy="30" r="7" fill="#ff3b30"/><circle cx="30" cy="24" r="7" fill="#34c759"/></g></svg>`,
+  notes:`<svg viewBox="0 0 60 60"><rect width="60" height="60" rx="14" fill="#fdfd96"/><rect width="60" height="15" rx="14" fill="#ffcc00"/><path d="M14 27h32M14 35h32M14 43h20" stroke="#c79800" stroke-width="2.5" stroke-linecap="round"/></svg>`
 };
-function calIcon(){const d=new Date();return `<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#f2f2f3"/><text x="30" y="15" text-anchor="middle" font-size="10" font-weight="700" fill="#555" font-family="sans-serif">${DOW[d.getDay()]}요일</text><text x="30" y="46" text-anchor="middle" font-size="30" font-weight="300" fill="#111" font-family="sans-serif">${d.getDate()}</text></svg>`}
+const calIcon=()=>{const d=new Date();return `<svg viewBox="0 0 60 60"><rect width="60" height="60" rx="14" fill="#fff"/><rect width="60" height="18" rx="14" fill="#ff3b30"/><text x="30" y="13" text-anchor="middle" font-size="9" font-weight="700" fill="#fff" font-family="sans-serif">${DOW[d.getDay()]}요일</text><text x="30" y="47" text-anchor="middle" font-size="28" font-weight="400" fill="#111" font-family="sans-serif">${d.getDate()}</text></svg>`}
 const APPICON={sms:IC.sms,kakao:IC.kakao,sb:IC.sb};
 
-/* ---------- 사진용 모노톤 장면 생성 ---------- */
-function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-function scene(kind,seed,uid){
-  const r=rng(seed), P=n=>Math.round(n*10)/10; let b='';
-  const wins=(x,y,w,h)=>{let s='';const n=Math.floor(w*h/380);for(let k=0;k<n;k++)if(r()<.3)s+=`<rect x="${P(x+3+r()*(w-9))}" y="${P(y+4+r()*(h-12))}" width="3" height="4" fill="#e6e6ea" opacity="${P(.25+r()*.6)}"/>`;return s};
-  if(kind==='city'){
-    let x=-10;while(x<300){const w=26+r()*30,h=70+r()*130;b+=`<rect x="${P(x)}" y="${P(300-h)}" width="${P(w)}" height="${P(h)}" fill="${['#17171a','#1f1f23','#121214'][Math.floor(r()*3)]}"/>`+wins(x,300-h,w,h);x+=w+2}
-    b+=`<circle cx="${P(200+r()*60)}" cy="50" r="14" fill="#d8d8dc" opacity=".5" filter="url(#bl${uid})"/><rect y="190" width="300" height="110" fill="url(#fg${uid})"/>`;
-  }else if(kind==='stairs'){
-    b+=`<rect width="300" height="300" fill="#0b0b0d"/>`;let y=300;
-    for(let i=0;i<9;i++){const ny=y-(y-90)*.3;b+=`<rect x="${i*12}" y="${P(ny)}" width="${300-i*24}" height="${P(y-ny)}" fill="${i%2?'#1c1c1f':'#2e2e32'}"/>`;y=ny}
-    b+=`<rect x="108" y="82" width="84" height="10" fill="#f0f0f2" opacity=".85" filter="url(#bl${uid})"/>`;
-  }else if(kind==='door'){
-    b+=`<rect x="92" y="50" width="116" height="250" fill="#070708"/><rect x="100" y="58" width="100" height="242" fill="#101012"/><circle cx="184" cy="190" r="4" fill="#6a6a70"/><rect x="128" y="96" width="44" height="18" fill="#2a2a2e"/><text x="150" y="110" text-anchor="middle" font-size="12" fill="#aaa" font-family="sans-serif">${100+Math.floor(r()*500)}</text>`+
-       `<rect x="100" y="290" width="100" height="10" fill="#f2f2f4" opacity=".7" filter="url(#bb${uid})"/><rect x="100" y="296" width="100" height="3" fill="#fff" opacity=".9"/>`;
-  }else if(kind==='rain'){
-    for(let k=0;k<16;k++)b+=`<circle cx="${P(r()*300)}" cy="${P(r()*300)}" r="${P(8+r()*20)}" fill="#d4d4d8" opacity="${P(.15+r()*.4)}" filter="url(#bb${uid})"/>`;
-    for(let k=0;k<40;k++){const x=r()*300,y=r()*300;b+=`<path d="M${P(x)} ${P(y)} l-2 ${P(14+r()*30)}" stroke="#c8c8cc" stroke-width=".8" opacity="${P(.1+r()*.25)}"/>`}
-  }else if(kind==='figure'){
-    b+=`<circle cx="${P(120+r()*60)}" cy="120" r="70" fill="#e0e0e4" opacity=".35" filter="url(#bb${uid})"/><g filter="url(#bl${uid})"><ellipse cx="150" cy="118" rx="20" ry="25" fill="#040405"/><path d="M92 300 C98 210 128 148 150 146 C172 148 202 210 208 300 Z" fill="#040405"/></g><rect y="200" width="300" height="100" fill="url(#fg${uid})"/>`;
-  }else if(kind==='map'){
-    b+=`<rect width="300" height="300" fill="#161618"/>`;
-    for(let k=0;k<=300;k+=30)b+=`<path d="M${k} 0V300M0 ${k}H300" stroke="#27272b" stroke-width="1"/>`;
-    for(let k=0;k<4;k++)b+=`<path d="M${P(r()*300)} 0 L${P(r()*300)} 300" stroke="#37373c" stroke-width="${P(2+r()*3)}"/>`;
-    let pts=[];for(let k=0;k<6;k++)pts.push([P(30+r()*240),P(30+r()*240)]);
-    b+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#ececee" stroke-width="1.6" stroke-dasharray="5 4"/>`;
-    pts.forEach((p,i)=>{b+=`<circle cx="${p[0]}" cy="${p[1]}" r="${i===pts.length-1?7:4}" fill="${i===pts.length-1?'#fff':'#9a9aa0'}"/>`;if(i===pts.length-1)b+=`<circle cx="${p[0]}" cy="${p[1]}" r="16" fill="none" stroke="#fff" opacity=".5"/>`});
-    b+=`<circle cx="150" cy="150" r="120" fill="none" stroke="#fff" stroke-opacity=".12"/>`;
-  }else if(kind==='paper'){
-    b+=`<g transform="rotate(${P(-6+r()*12)} 150 150)"><rect x="52" y="42" width="200" height="226" fill="#0a0a0a" opacity=".5" transform="translate(6 8)"/><rect x="52" y="42" width="200" height="226" fill="#c9c9cc"/>`;
-    for(let k=0;k<9;k++){const w=50+r()*110;b+=`<path d="M70 ${72+k*22} h${P(w)}" stroke="#26262a" stroke-width="2.4" opacity=".85"/>`;if(r()<.3)b+=`<path d="M66 ${72+k*22} h${P(w+8)}" stroke="#000" stroke-width="3.4"/>`}
-    b+=`</g>`;
-  }else{ // car
-    b+=`<path d="M0 220 L300 220 M0 300 L120 220 M300 300 L180 220" stroke="#2a2a2e" stroke-width="2"/>`;
-    for(let k=0;k<2;k++)b+=`<circle cx="${k?190:110}" cy="190" r="22" fill="#f2f2f4" opacity=".85" filter="url(#bb${uid})"/><circle cx="${k?190:110}" cy="190" r="6" fill="#fff"/>`;
-    for(let k=0;k<7;k++)b+=`<circle cx="${P(r()*300)}" cy="${P(60+r()*100)}" r="${P(3+r()*9)}" fill="#d0d0d4" opacity="${P(.1+r()*.25)}" filter="url(#bl${uid})"/>`;
-  }
-  const top=kind==='paper'?'#303033':kind==='map'?'#161618':kind==='door'?'#26262a':'#2b2b2f';
-  return `<svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="bg${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset="1" stop-color="#09090a"/></linearGradient><linearGradient id="fg${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a8a90" stop-opacity="0"/><stop offset="1" stop-color="#8a8a90" stop-opacity=".45"/></linearGradient><radialGradient id="vg${uid}" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".7"/></radialGradient><filter id="bl${uid}"><feGaussianBlur stdDeviation="4"/></filter><filter id="bb${uid}"><feGaussianBlur stdDeviation="9"/></filter></defs><rect width="300" height="300" fill="url(#bg${uid})"/>${b}<rect width="300" height="300" fill="url(#vg${uid})"/></svg>`;
-}
-function portrait(p){
-  const r=rng(p.seed||1), id='pt'+p.id, hx=-20+r()*40, hy=78+r()*14, sc=.85+r()*.3, bl=p.blur??2.5;
-  return `<svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="${id}g" cx="${P2(.3+r()*.4)}" cy="${P2(.2+r()*.2)}" r=".9"><stop offset="0" stop-color="#5a5a5f"/><stop offset="1" stop-color="#0c0c0e"/></radialGradient><filter id="${id}b"><feGaussianBlur stdDeviation="${bl}"/></filter></defs><rect width="300" height="200" fill="url(#${id}g)"/><g filter="url(#${id}b)" transform="translate(${P2(hx)} 0)"><ellipse cx="150" cy="${P2(hy)}" rx="${P2(30*sc)}" ry="${P2(36*sc)}" fill="#050506"/><path d="M60 215 C70 150 110 ${P2(hy+36*sc)} 150 ${P2(hy+36*sc)} C190 ${P2(hy+36*sc)} 230 150 240 215 Z" fill="#050506"/></g><rect width="300" height="200" fill="rgba(0,0,0,.18)"/></svg>`;
-}
-function P2(n){return Math.round(n*100)/100}
-
-/* ---------- 상태 ---------- */
 let S, epoch=0, chains={}, call=null, callSeq=0, timerId=null, ending=false, toastT=null, bannerT=null, bannerTarget=null, locked=true, eventsRan=false;
 const U={app:null, sms:{id:null}, kakao:{tab:'friends', id:null}, sb:{tab:'discover', id:null}, phone:{tab:'keypad', dial:''}, photo:null, note:null};
-const APPS=['phone','sms','kakao','sb','photos','notes'];
+const APPS=['phone','sms','kakao','sb','photos','notes','calendar'];
 
 function initState(){
   S={sms:{}, kakao:{}, sb:{}, typing:{}, recents:[], missedNew:0, notes:[]};
@@ -893,17 +830,14 @@ function initState(){
   S.notes=CONFIG.notes.map(n=>({...n,ts:Date.now()-n.ago*6e4,unlocked:false}));
 }
 
-/* ---------- 홈 / 잠금 ---------- */
 function homeBtn(app,name,svg,act){return `<button class="ic" data-act="${act}" data-app="${app}"><span class="tw"><span class="tile">${svg}</span><span class="bd" id="bd-${app}"></span></span>${name}</button>`}
 function renderHome(){
   $('#grid').innerHTML=[
-    homeBtn('cal','캘린더',calIcon(),'deco'),homeBtn('photos','사진',IC.photos,'open'),
-    homeBtn('camera','카메라',IC.camera,'deco'),homeBtn('maps','지도',IC.maps,'deco'),
-    homeBtn('weather','날씨',IC.weather,'deco'),homeBtn('clock','시계',IC.clock,'deco'),
-    homeBtn('notes','메모',IC.notes,'open'),homeBtn('settings','설정',IC.settings,'deco')
+    homeBtn('calendar','캘린더',calIcon(),'open'),homeBtn('photos','사진',IC.photos,'open'),
+    homeBtn('notes','메모',IC.notes,'open')
   ].join('');
   const dk=a=>`<button class="ic" data-act="open" data-app="${a[0]}" aria-label="${a[1]}"><span class="tw"><span class="tile">${a[2]}</span><span class="bd" id="bd-${a[0]}"></span></span></button>`;
-  $('#dock').innerHTML=[['phone','전화',IC.phone],['sms','메시지',IC.sms],['kakao','카카오톡',IC.kakao],['sb','썸바디',IC.sb]].map(dk).join('');
+  $('#dock').innerHTML=[['phone','전화',IC.phone],['sms','메시지',IC.sms],['kakao','카카오톡',IC.kakao],['sb','썸바디',IC.sb']].map(dk).join('');
 }
 function unreadSum(app){return Object.values(S[app]).reduce((a,t)=>a+t.unread,0)}
 function updateBadges(){
@@ -929,7 +863,6 @@ function unlock(){
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),1800)}
 function updateClock(){const d=new Date();$('#clock').textContent=`${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}`; if(locked) renderLock()}
 
-/* ---------- 앱 전환 ---------- */
 function showApp(app){
   if(locked) unlock();
   U.app=app; APPS.forEach(a=>$('#app-'+a).classList.toggle('on',a===app)); renderApp(app);
@@ -946,7 +879,6 @@ function renderApp(app){
 }
 function viewing(app,id){return U.app===app && !call && !locked && U[app].id===id}
 
-/* ---------- 메시지 엔진 (문자 · 카톡 · 썸바디 공통) ---------- */
 function pushMsg(app,id,from,text){
   const t=S[app][id]; t.msgs.push({from,text,ts:Date.now()});
   if(from==='them'){ if(viewing(app,id)) t.unread=0; else {t.unread++; if(!locked) notify(app,id,text); else renderLock()} }
@@ -982,9 +914,8 @@ function notify(app,id,text){
   b.classList.add('on'); clearTimeout(bannerT); bannerT=setTimeout(()=>b.classList.remove('on'),4200);
 }
 const lastTs=t=>t.msgs.length?t.msgs[t.msgs.length-1].ts:0;
-function lastReal(t){return [...t.msgs].reverse().find(m=>m.from!=='sys')}
+const lastReal=(t)=>[...t.msgs].reverse().find(m=>m.from!=='sys');
 
-/* ---------- 문자 ---------- */
 function renderSmsList(){
   const rows=CONFIG.contacts.filter(c=>c.sms).map(c=>({c,t:S.sms[c.id]})).sort((a,b)=>lastTs(b.t)-lastTs(a.t));
   $('#sms-rows').innerHTML=rows.map(({c,t})=>{const l=lastReal(t);
@@ -1010,7 +941,6 @@ function renderBubbles(app){
   const box=$(app==='sms'?'#sms-msgs':'#sb-msgs'); box.innerHTML=h; box.scrollTop=box.scrollHeight;
 }
 
-/* ---------- 카카오톡 ---------- */
 function renderKakaoMain(){
   const tab=U.kakao.tab; $('#kt-friends').classList.toggle('on',tab==='friends'); $('#kt-chats').classList.toggle('on',tab==='chats');
   $('#kk-title').textContent=tab==='friends'?'친구':'채팅'; let h='';
@@ -1048,7 +978,6 @@ function renderKakaoMsgs(){
   const box=$('#kk-msgs'); box.innerHTML=h; box.scrollTop=box.scrollHeight;
 }
 
-/* ---------- 썸바디 ---------- */
 function renderSbMain(){
   const tab=U.sb.tab; $('#st-discover').classList.toggle('on',tab==='discover'); $('#st-chats').classList.toggle('on',tab==='chats');
   let h='';
@@ -1082,7 +1011,6 @@ function openSb(id){
   renderBubbles('sb'); updateBadges();
 }
 
-/* ---------- 전화 ---------- */
 const KEYS=[['1',''],['2','ABC'],['3','DEF'],['4','GHI'],['5','JKL'],['6','MNO'],['7','PQRS'],['8','TUV'],['9','WXYZ'],['*',''],['0','+'],['#','']];
 function renderKeypad(){$('#kp').innerHTML=KEYS.map(([k,s])=>`<button class="key" data-act="key" data-k="${k}"><b>${k}</b><small>${s}</small></button>`).join('')}
 function renderDial(){const d=U.phone.dial; $('#dial').textContent=fmtNum(d)||''; $('#delbtn').style.visibility=d?'visible':'hidden'}
@@ -1102,7 +1030,6 @@ function renderContacts(){
   $('#ct-rows').innerHTML=list.map(c=>`<button class="rc" data-act="call-contact" data-id="${c.id}">${avatar('sms',c,40)}<span class="mid"><span><b>${esc(c.name)}</b><small>${esc(c.number)}</small></span></span></button>`).join('');
 }
 
-/* ---------- 통화 ---------- */
 const alive=id=>call&&call.id===id;
 function startCall(number,contact,incoming){
   if(call||ending) return; if(locked) unlock();
@@ -1163,20 +1090,18 @@ function renderCall(c=call,ended){
   el.innerHTML=`<div class="cl-top"><div class="cl-name">${esc(name)}</div>${(ct&&ct.saved!==false)?`<div class="cl-num">${esc(ct.number)}</div>`:''}<div class="cl-st" id="cl-st">${st}</div><div class="av cl-av" style="background:${ct?shade(ct):'#3b3b3f'}">${esc(ct?ini('sms',ct):'?')}</div></div><div class="cl-tr">${lines}</div>${bottom}`;
 }
 
-/* ---------- 사진 ---------- */
 function renderPhotos(){
-  $('#ph-sub').textContent=`${CONFIG.photos.length}장 · 성윤오의 보관함`;
-  $('#ph-grid').innerHTML='<div class="pgrid">'+CONFIG.photos.map((p,i)=>`<button class="pt" data-act="photo-open" data-i="${i}" aria-label="사진 ${i+1}">${scene(p.kind,p.seed,'g'+i)}</button>`).join('')+'</div>';
+  $('#ph-sub').textContent=`12개의 항목`;
+  $('#ph-grid').innerHTML='<div class="pgrid">'+CONFIG.photos.map((p,i)=>`<button class="pt" data-act="photo-open" data-i="${i}" aria-label="사진 ${i+1}"></button>`).join('')+'</div>';
   if(U.photo!=null) openPhoto(U.photo); else $('#pviewer').hidden=true;
 }
 function openPhoto(i){
-  const n=CONFIG.photos.length; i=(i+n)%n; U.photo=i; const p=CONFIG.photos[i];
-  $('#pviewer').hidden=false; $('#pv-img').innerHTML=scene(p.kind,p.seed,'v'+i);
+  const n=CONFIG.photos.length; if(!n) return; i=(i+n)%n; U.photo=i; const p=CONFIG.photos[i];
+  $('#pviewer').hidden=false; $('#pv-img').innerHTML='';
   $('#pv-info').innerHTML=`<b>${esc(p.date)}</b><span>${esc(p.place)}</span><p>${esc(p.cap)}</p>`;
   $('#pv-count').textContent=`${i+1} / ${n}`;
 }
 
-/* ---------- 메모 ---------- */
 function renderNotes(){
   $('#nt-rows').innerHTML=[...S.notes].sort((a,b)=>b.ts-a.ts).map(n=>`<button class="nr" data-act="note-open" data-id="${n.id}"><b>${n.locked&&!n.unlocked?'[잠김] ':''}${esc(n.title||'새로운 메모')}</b><span>${esc(rel(n.ts))} · ${n.locked&&!n.unlocked?'잠긴 메모':esc((n.text||'추가 텍스트 없음').split('\n')[0])}</span></button>`).join('')+'<div style="height:10px"></div>';
 }
@@ -1188,7 +1113,6 @@ function renderNoteView(){
   else $('#nt-body').innerHTML=`<input class="nt-title" id="nt-title" value="${esc(n.title)}" placeholder="제목"><textarea class="nt-text" id="nt-text" placeholder="메모를 입력하세요">${esc(n.text)}</textarea>`;
 }
 
-/* ---------- 이벤트 ---------- */
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-act]'); if(!el) return; const d=el.dataset;
   switch(d.act){
@@ -1243,8 +1167,6 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='Backspace'){U.phone.dial=U.phone.dial.slice(0,-1);renderDial()}
   else if(e.key==='Enter'){const n=digits(U.phone.dial);if(n)startCall(n,CONFIG.contacts.find(c=>c.number&&digits(c.number)===n)||null)}
 });
-$('#btn-incoming').addEventListener('click',()=>{const c=byId(CONFIG.incomingFrom)||CONFIG.contacts[0];startCall(digits(c.number),c,true)});
-$('#btn-reset').addEventListener('click',reset);
 
 function fit(){
   const bare=innerWidth<=460; document.body.classList.toggle('bare',bare);
