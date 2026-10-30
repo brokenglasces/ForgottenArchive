@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>해피 핼러윈 윤오 씨</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap">
@@ -9,8 +14,9 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0a0a0b;--fg:#e8e8ea;--muted:#85878f;--chip:#17171a;--chip-line:#2c2c31;--accent:#e8e8ea;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0a0a0b;--fg:#e8e8ea;--muted:#85878f;--chip:#17171a;--chip-line:#2c2c31;--accent:#e8e8ea;color-scheme:dark}
-body{background:var(--bg);color:var(--fg);font-family:var(--ph);padding-block:20px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-#stage{display:flex;flex-direction:column;align-items:center;gap:18px}
+html,body{height:100%}
+body{margin:0;box-sizing:border-box;min-height:100dvh;background:var(--bg);color:var(--fg);font-family:var(--ph);padding-block:20px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+#stage{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;min-height:calc(100dvh - 40px)}
 #fit{position:relative}
 .tools{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .tools button{font:500 14px var(--ph);color:var(--fg);background:var(--chip);border:1px solid var(--chip-line);border-radius:10px;padding:9px 14px;cursor:pointer}
@@ -20,7 +26,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--ph);padding-block:20
 
 /* ---------- 기기 ---------- */
 #phone{position:absolute;left:0;top:0;width:420px;height:874px;padding:3px;border-radius:62px;transform-origin:0 0;
-  background:linear-gradient(150deg,#55565b,#111113 38%,#2a2b2f 70%,#55565b);box-shadow:0 40px 70px -28px rgba(0,0,0,.6)}
+  background:linear-gradient(150deg,#55565b,#111113 38%,#2a2b2f 70%,#55565b);box-shadow:0 24px 48px -24px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.06)}
 #bezel{width:100%;height:100%;background:#000;border-radius:59px;padding:12px}
 #screen{--k1:#0b0b0c;--k2:#151517;--k3:#222225;--k4:#38383c;--line:rgba(255,255,255,.1);--t1:#f2f2f3;--t2:#9b9ba1;--t3:#6b6b72;--me:#e8e8eb;--meT:#0b0b0c;
   position:relative;width:390px;height:844px;border-radius:47px;overflow:hidden;background:#000;font-family:var(--ph);color:var(--t1);user-select:none;-webkit-user-select:none}
@@ -395,7 +401,8 @@ button:focus-visible{outline:2px solid #fff;outline-offset:-2px}
 #fxs{position:absolute;inset:0;z-index:107;pointer-events:none;overflow:hidden}
 #fxs i{position:absolute;left:0;right:0;background:#fff;mix-blend-mode:difference}
 </style>
-
+</head>
+<body>
 <main id="stage">
   <div id="fit">
     <div id="phone">
@@ -1522,3 +1529,5 @@ addEventListener('resize',fit);
 fit(); reset(); setInterval(updateClock,20000); setInterval(tick,1000);
 })();
 </script>
+</body>
+</html>
