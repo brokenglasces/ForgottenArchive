@@ -1223,7 +1223,7 @@ function adSchedule(ms){clearTimeout(adTimer);const e=epoch;adTimer=setTimeout((
 function adShow(e){
   if(e!==epoch||adDone) return;
   if(locked||call||$('#ad').classList.contains('on')){adSchedule(2000);return}
-  const c=CONFIG.airdrop; $('#ad-t').textContent=`“${c.sender}” 님이 “${c.file}”을(를) 공유하고자 합니다.`;
+  const c=CONFIG.airdrop; $('#ad-t').textContent=`“${c.sender}” 님이 “${c.file}”을(를) 공유하려고 합니다.`;
   $('#ad-r').style.display=''; $('#ad-bar').style.display='none'; $('#ad-bar i').style.width='0';
   $('#ad').classList.add('on'); flick();
 }
