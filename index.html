@@ -1,0 +1,1267 @@
+<title>아이폰 13 시뮬레이터</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap">
+<style>
+/* 레이아웃: 페이지 한가운데 아이폰 13 한 대(390x844). 전체 톤은 블랙·그레이·화이트 모노톤 */
+:root{
+  --bg:#d9dadd; --fg:#111214; --muted:#5d6068; --chip:#f1f1f3; --chip-line:#b9bbc2; --accent:#111214;
+  --ph:-apple-system,BlinkMacSystemFont,"SF Pro Text","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0a0a0b;--fg:#e8e8ea;--muted:#85878f;--chip:#17171a;--chip-line:#2c2c31;--accent:#e8e8ea;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a0a0b;--fg:#e8e8ea;--muted:#85878f;--chip:#17171a;--chip-line:#2c2c31;--accent:#e8e8ea;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--ph);padding-block:20px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+#stage{display:flex;flex-direction:column;align-items:center;gap:18px}
+#fit{position:relative}
+.tools{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.tools button{font:500 14px var(--ph);color:var(--fg);background:var(--chip);border:1px solid var(--chip-line);border-radius:10px;padding:9px 14px;cursor:pointer}
+.tools button:hover{border-color:var(--accent)}
+.tools button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hint{font-size:13px;color:var(--muted);text-align:center;max-width:40ch;line-height:1.55;margin:0}
+
+/* ---------- 기기 ---------- */
+#phone{position:absolute;left:0;top:0;width:420px;height:874px;padding:3px;border-radius:62px;transform-origin:0 0;
+  background:linear-gradient(150deg,#55565b,#111113 38%,#2a2b2f 70%,#55565b);box-shadow:0 40px 70px -28px rgba(0,0,0,.6)}
+#bezel{width:100%;height:100%;background:#000;border-radius:59px;padding:12px}
+#screen{--k1:#0b0b0c;--k2:#151517;--k3:#222225;--k4:#38383c;--line:rgba(255,255,255,.1);--t1:#f2f2f3;--t2:#9b9ba1;--t3:#6b6b72;--me:#e8e8eb;--meT:#0b0b0c;
+  position:relative;width:390px;height:844px;border-radius:47px;overflow:hidden;background:#000;font-family:var(--ph);color:var(--t1);user-select:none;-webkit-user-select:none}
+.sbtn{position:absolute;width:4px;background:#2b2d33;border-radius:2px}
+body.bare #phone{width:390px;height:844px;padding:0;border-radius:0;background:none;box-shadow:none}
+body.bare #bezel{padding:0;border-radius:0}
+body.bare #screen{border-radius:0}
+body.bare .sbtn{display:none}
+#notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:162px;height:32px;background:#000;border-radius:0 0 20px 20px;z-index:101}
+#sb{position:absolute;top:0;left:0;right:0;height:47px;display:flex;justify-content:space-between;align-items:center;padding:6px 26px 0 0;z-index:100;font:600 16px var(--ph);pointer-events:none;color:#fff}
+#sb .l{width:150px;text-align:center}
+#sb .r{display:flex;gap:6px;align-items:center;width:118px;justify-content:flex-end;padding-right:6px}
+#sb svg{fill:currentColor;display:block}
+#hbar{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:200px;height:30px;border:0;background:none;z-index:110;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding:0 0 8px}
+#hbar i{display:block;width:134px;height:5px;border-radius:3px;background:#fff;opacity:.85}
+#toast{position:absolute;left:50%;bottom:120px;transform:translate(-50%,10px);background:rgba(60,60,64,.95);color:#fff;font-size:14px;padding:10px 16px;border-radius:20px;z-index:120;opacity:0;pointer-events:none;transition:.25s;white-space:nowrap}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- 잠금 화면 ---------- */
+#lock{position:absolute;inset:0;z-index:95;display:none;flex-direction:column;align-items:center;padding:84px 20px 34px;cursor:pointer;
+  background:radial-gradient(90% 55% at 50% 0%,#424247 0%,transparent 70%),linear-gradient(#141416,#020203)}
+#lock.on{display:flex}
+.lk-date{font-size:19px;font-weight:500;color:#cfcfd3;letter-spacing:.2px}
+.lk-time{font-size:88px;font-weight:300;line-height:1.05;letter-spacing:-2px;color:#f4f4f5;font-variant-numeric:tabular-nums}
+.lk-who{margin-top:8px;font-size:12px;letter-spacing:.35em;color:#7d7d84}
+.lk-n{margin-top:auto;width:100%;display:flex;flex-direction:column;gap:8px}
+.lkc{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.1);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:18px;padding:10px 12px}
+.lkc .ai{width:34px;height:34px;border-radius:8px;overflow:hidden;flex:none}
+.lkc .ai svg{width:100%;height:100%;display:block}
+.lkc .tx{min-width:0;flex:1}
+.lkc b{font-size:13.5px;display:block;font-weight:600}
+.lkc span{font-size:13.5px;color:#c4c4c9;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lk-hint{margin-top:18px;font-size:12.5px;color:#7d7d84;text-align:center;letter-spacing:.1em}
+
+/* ---------- 홈 ---------- */
+#home{position:absolute;inset:0;z-index:1;padding:74px 24px 0;
+  background:radial-gradient(100% 55% at 50% 0%,#3b3b40 0%,transparent 72%),radial-gradient(80% 45% at 0% 100%,#2a2a2e 0%,transparent 70%),linear-gradient(#0f0f11,#030304)}
+#home::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.14;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+.grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,60px);justify-content:space-between;row-gap:22px}
+.ic{display:flex;flex-direction:column;align-items:center;gap:6px;color:#e4e4e7;font:400 11px var(--ph);background:none;border:0;cursor:pointer;padding:0;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.ic:active .tile{filter:brightness(.65)}
+.tw{position:relative}
+.tile{width:60px;height:60px;border-radius:14px;overflow:hidden;display:block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.tile svg{width:100%;height:100%;display:block}
+.bd{position:absolute;top:-7px;right:-7px;min-width:22px;height:22px;border-radius:11px;background:#f2f2f3;color:#0b0b0c;font:700 13px/22px var(--ph);text-align:center;padding:0 6px;box-sizing:border-box;z-index:2}
+.bd:empty{display:none}
+.dots{position:absolute;left:0;right:0;bottom:124px;display:flex;gap:8px;justify-content:center;z-index:1}
+.dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3)}
+.dots i:first-child{background:#fff}
+.dock{position:absolute;z-index:1;left:12px;right:12px;bottom:22px;height:94px;border-radius:36px;background:rgba(255,255,255,.14);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;justify-content:space-between;align-items:center;padding:0 17px}
+
+/* ---------- 앱 공통 ---------- */
+.app{position:absolute;inset:0;display:none;background:var(--k1);z-index:10;flex-direction:column;color:var(--t1)}
+.app.on{display:flex;animation:pop .26s ease}
+@keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+.view{display:flex;flex-direction:column;flex:1;min-height:0;position:relative}
+.pad47{height:47px;flex:none}
+.hs{height:30px;flex:none}
+.scroll{overflow-y:auto;flex:1;min-height:0;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.lt{font:700 34px/1.15 var(--ph);padding:2px 16px 6px;letter-spacing:-.4px}
+.srch{margin:2px 16px 8px;height:36px;border-radius:10px;background:var(--k2);color:var(--t3);font-size:16px;display:flex;align-items:center;padding:0 10px}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;color:#e4e4e7;font-weight:500;flex:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.bd2{min-width:20px;height:20px;border-radius:10px;background:#f2f2f3;color:#0b0b0c;font:700 12px/20px var(--ph);text-align:center;padding:0 6px;box-sizing:border-box}
+
+/* ---------- 메시지 / 썸바디 채팅 ---------- */
+.sr{display:grid;grid-template-columns:12px 48px 1fr;gap:8px;align-items:center;width:100%;text-align:left;background:none;border:0;padding:10px 16px 10px 8px;cursor:pointer;font-family:var(--ph);color:var(--t1)}
+.sr:active{background:var(--k2)}
+.ud{width:10px;height:10px;border-radius:50%;background:#f2f2f3;display:block}
+.sm{min-width:0;display:flex;flex-direction:column;gap:2px;border-bottom:.5px solid var(--line);padding-bottom:10px;margin-bottom:-10px}
+.sn{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.sn b{font-size:16.5px;font-weight:600}
+.sn em{font-style:normal;font-size:14px;color:var(--t3);flex:none}
+.sp{font-size:15px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.th-head{flex:none;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 8px 6px;background:rgba(18,18,20,.96);border-bottom:.5px solid var(--line)}
+.back{background:none;border:0;color:#d4d4d8;font:400 17px var(--ph);display:flex;align-items:center;gap:2px;cursor:pointer;padding:6px 4px;justify-self:start}
+.back svg{width:12px;height:20px}
+.th-who{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--t1)}
+.msgs{flex:1;min-height:0;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:3px;scrollbar-width:none;background:var(--k1)}
+.msgs::-webkit-scrollbar{display:none}
+.dv{align-self:center;font-size:11.5px;color:var(--t3);margin:10px 0 6px;text-align:center}
+.b{max-width:76%;padding:7px 13px;border-radius:18px;font-size:16.5px;line-height:1.32;white-space:pre-wrap;word-break:break-word;animation:in .18s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.b.me{align-self:flex-end;background:var(--me);color:var(--meT)}
+.b.th{align-self:flex-start;background:var(--k3);color:var(--t1)}
+.dl{align-self:flex-end;font-size:11px;color:var(--t3);margin-right:4px}
+.typing{display:flex;gap:4px;padding:12px 14px}
+.typing i{width:8px;height:8px;border-radius:50%;background:#85858b;animation:bl 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,60%,100%{opacity:.3}30%{opacity:1}}
+.cmp{flex:none;display:flex;gap:8px;align-items:center;padding:8px 12px 4px;background:var(--k1)}
+.cmp input{flex:1;min-width:0;height:36px;border:1px solid var(--k4);border-radius:18px;padding:0 14px;font:16px var(--ph);outline:none;background:var(--k2);color:var(--t1);user-select:text;-webkit-user-select:text}
+.cmp input::placeholder{color:var(--t3)}
+.cmp .go{width:30px;height:30px;border-radius:50%;border:0;background:#f2f2f3;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.cmp .go[disabled]{background:var(--k4);cursor:default}
+.cmp .go svg{width:16px;height:16px;fill:#0b0b0c}
+
+/* ---------- 카카오톡 ---------- */
+.khead{flex:none;display:flex;justify-content:space-between;align-items:center;padding:6px 16px 8px}
+.khead b{font-size:22px;font-weight:700;letter-spacing:-.4px}
+.khead span{color:var(--t3);font-size:13px}
+.krow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:0;padding:9px 16px;cursor:pointer;font-family:var(--ph);color:var(--t1)}
+.krow:active{background:var(--k2)}
+.kav{width:46px;height:46px;border-radius:17px;display:flex;align-items:center;justify-content:center;color:#e4e4e7;font-weight:700;font-size:18px;flex:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.kav.s{width:38px;height:38px;border-radius:14px;font-size:15px}
+.kmid{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+.kmid b{font-size:15px;font-weight:700}
+.kmid span{font-size:13px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kr{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+.kr em{font-style:normal;font-size:11px;color:var(--t3)}
+.ksec{font-size:12px;color:var(--t3);padding:12px 16px 4px}
+.ktabs{flex:none;display:flex;border-top:.5px solid var(--line);background:var(--k1);padding-bottom:30px}
+.ktabs button{flex:1;background:none;border:0;padding:9px 0 5px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--t3);font:500 10px var(--ph);cursor:pointer;position:relative}
+.ktabs button.on{color:#fff}
+.ktabs svg{width:26px;height:26px;fill:currentColor}
+.ktabs .bd{top:2px;right:calc(50% - 26px);font-size:11px;min-width:16px;height:16px;line-height:16px;padding:0 4px}
+#kk-room{background:#121214}
+.kth{flex:none;display:flex;align-items:center;gap:8px;padding:0 12px 8px;background:#121214;color:var(--t1);border-bottom:.5px solid var(--line)}
+.kth .back{font-size:24px}
+.kth b{font-size:17px;font-weight:700;flex:1}
+.kmsgs{flex:1;min-height:0;overflow-y:auto;padding:6px 12px 10px;scrollbar-width:none;background:#121214}
+.kmsgs::-webkit-scrollbar{display:none}
+.kdv{display:flex;justify-content:center;margin:12px 0 8px}
+.kdv span{background:rgba(255,255,255,.1);color:var(--t2);font-size:11.5px;border-radius:12px;padding:4px 12px}
+.km{display:flex;gap:8px;margin:2px 0;align-items:flex-start}
+.km.me{justify-content:flex-end;align-items:flex-end}
+.kcol{display:flex;flex-direction:column;gap:3px;min-width:0}
+.kn{font-size:12px;color:var(--t2)}
+.kbr{display:flex;align-items:flex-end;gap:5px}
+.kbub{padding:8px 11px;border-radius:12px;background:#26262a;font-size:14.5px;line-height:1.38;max-width:215px;white-space:pre-wrap;word-break:break-word;animation:in .18s ease;color:var(--t1)}
+.km.me .kbub{background:#dcdce0;color:#0b0b0c}
+.kt{font-size:10px;color:var(--t3);flex:none;white-space:nowrap}
+.kspace{width:38px;flex:none}
+.ktyp{display:flex;gap:4px;padding:12px 14px}
+.ktyp i{width:7px;height:7px;border-radius:50%;background:#85858b;animation:bl 1s infinite}
+.ktyp i:nth-child(2){animation-delay:.15s}.ktyp i:nth-child(3){animation-delay:.3s}
+.kcmp{flex:none;display:flex;gap:8px;align-items:center;padding:8px 10px 4px;background:var(--k1)}
+.kcmp .plus{width:30px;height:30px;border-radius:50%;background:var(--k3);color:var(--t2);display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.kcmp input{flex:1;min-width:0;height:36px;border:0;border-radius:10px;background:var(--k2);padding:0 12px;font:15px var(--ph);outline:none;color:var(--t1);user-select:text;-webkit-user-select:text}
+.kcmp .go{width:46px;height:34px;border-radius:9px;border:0;background:var(--k3);color:var(--t3);font:700 14px var(--ph);cursor:pointer;flex:none}
+.kcmp .go.on{background:#e8e8eb;color:#0b0b0c}
+
+/* ---------- 전화 ---------- */
+.rc{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;padding:9px 16px;cursor:pointer;font-family:var(--ph);color:var(--t1)}
+.rc:active{background:var(--k2)}
+.rc .mid{flex:1;min-width:0;border-bottom:.5px solid var(--line);padding-bottom:9px;margin-bottom:-9px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rc b{font-weight:500;font-size:17px;display:block}
+.rc small{font-size:13.5px;color:var(--t3)}
+.rc.missed b{font-weight:700;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:4px}
+.rc.missed small{color:var(--t1)}
+.rc em{font-style:normal;font-size:14px;color:var(--t3)}
+.dial{flex:1;min-height:90px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px;font:300 36px var(--ph);letter-spacing:.5px;color:var(--t1)}
+.kp{display:grid;grid-template-columns:repeat(3,78px);justify-content:center;gap:15px 22px;padding-bottom:14px}
+.key{width:78px;height:78px;border-radius:50%;border:0;background:var(--k3);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--t1);font-family:var(--ph);padding:0}
+.key:active{background:var(--k4)}
+.key b{font-size:34px;font-weight:300;line-height:1}
+.key small{font-size:10px;letter-spacing:2px;font-weight:600;line-height:1.2;height:12px;color:var(--t2)}
+.callrow{display:grid;grid-template-columns:repeat(3,78px);gap:22px;justify-content:center;align-items:center;padding-bottom:10px}
+.callbtn{width:78px;height:78px;border-radius:50%;border:0;background:#f2f2f3;display:flex;align-items:center;justify-content:center;cursor:pointer;grid-column:2}
+.callbtn:active{background:#bdbdc2}
+.callbtn svg{width:36px;height:36px;fill:#0b0b0c}
+.delbtn{grid-column:3;background:none;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;width:78px;height:78px}
+.delbtn svg{width:34px;height:34px;fill:var(--t3)}
+.ptabs{flex:none;display:flex;background:rgba(18,18,20,.96);border-top:.5px solid var(--line);padding-bottom:30px}
+.ptabs button{flex:1;background:none;border:0;padding:8px 0 4px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--t3);font:500 10px var(--ph);cursor:pointer}
+.ptabs button.on{color:#fff}
+.ptabs svg{width:26px;height:26px;fill:currentColor}
+
+/* ---------- 통화 화면 ---------- */
+#call{position:absolute;inset:0;z-index:60;display:none;flex-direction:column;color:#fff;padding:78px 0 34px;
+  background:radial-gradient(90% 50% at 50% 0%,#46464b 0%,transparent 70%),linear-gradient(#18181b,#040405)}
+#call.on{display:flex;animation:pop .22s ease}
+.cl-top{text-align:center;padding:0 24px;flex:none}
+.cl-name{font-size:34px;font-weight:500;letter-spacing:-.4px}
+.cl-num{font-size:14px;opacity:.55;margin-top:2px}
+.cl-st{font-size:18px;opacity:.7;margin-top:6px;font-variant-numeric:tabular-nums}
+.cl-av{margin:18px auto 0;width:92px;height:92px;font-size:38px}
+.ring .cl-av{animation:pulse 1.4s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.3)}100%{box-shadow:0 0 0 30px rgba(255,255,255,0)}}
+.cl-tr{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:12px;padding:12px 22px}
+.ln{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:16px;padding:10px 14px;max-width:86%;animation:in .25s ease;align-self:flex-start}
+.ln small{display:block;font-size:12px;opacity:.55;margin-bottom:2px}
+.ln p{margin:0;font-size:19px;line-height:1.4}
+.ln.me{align-self:flex-end;background:rgba(255,255,255,.88);color:#0b0b0c}
+.ln.sys{align-self:center;text-align:center;background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.25)}
+.ln.old{opacity:.4}
+.cgrid{display:grid;grid-template-columns:repeat(3,72px);gap:16px 40px;justify-content:center;flex:none;padding:6px 0 16px}
+.cb{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:#fff;font:400 12px var(--ph);cursor:pointer}
+.cb i{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center}
+.cb svg{width:30px;height:30px;fill:#fff}
+.cb.on i{background:#fff}.cb.on svg{fill:#111}
+.cend{display:flex;justify-content:center;flex:none}
+.endbtn,.accbtn{width:72px;height:72px;border-radius:50%;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.endbtn{background:#f2f2f3}.accbtn{background:#f2f2f3}
+.endbtn svg{width:34px;height:34px;fill:#0b0b0c;transform:rotate(135deg)}
+.accbtn svg{width:34px;height:34px;fill:#0b0b0c}
+.cinc{display:flex;justify-content:space-between;padding:0 54px;flex:none}
+.cinc label{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px}
+.cinc .decl{background:#303034}
+.cinc .decl svg{fill:#fff}
+
+/* ---------- 썸바디 ---------- */
+#app-sb{background:#050506}
+.sbh{flex:none;display:flex;justify-content:space-between;align-items:center;padding:8px 18px 12px;border-bottom:.5px solid var(--line)}
+.wm{font:300 13px var(--ph);letter-spacing:.42em;color:#fff}
+.sbr{font-size:11px;color:var(--t3);letter-spacing:.08em}
+.pf{margin:14px 16px 0;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#0e0e10}
+.pf-top{position:relative;height:200px;background:#000}
+.pf-top svg{width:100%;height:100%;display:block}
+.pf-top::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(0,0,0,.85))}
+.pf-id{position:absolute;left:14px;bottom:10px;right:14px;z-index:1;display:flex;justify-content:space-between;align-items:flex-end}
+.pf-id b{font-size:20px;font-weight:500;letter-spacing:.02em}
+.pf-id span{font-size:12px;color:#d0d0d4;border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:2px 9px}
+.pf-b{padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.pf-m{font-size:12px;color:var(--t3);letter-spacing:.04em}
+.pf-bio{font-size:14.5px;line-height:1.45;color:#d8d8dc;margin:0}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tags i{font-style:normal;font-size:11.5px;color:var(--t2);border:1px solid var(--k4);border-radius:12px;padding:2px 9px}
+.pfa{display:flex;gap:8px}
+.pb{flex:1;height:38px;border-radius:19px;border:1px solid var(--k4);background:none;color:#fff;font:500 14px var(--ph);cursor:pointer}
+.pb.solid{background:#f2f2f3;color:#0b0b0c;border-color:#f2f2f3}
+.pb[disabled]{color:var(--t3);cursor:default}
+.sbtabs button{color:#6b6b72}
+
+/* ---------- 사진 ---------- */
+.phs{padding:0 16px 8px;font-size:13px;color:var(--t3)}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.pt{aspect-ratio:1;background:#000;border:0;padding:0;cursor:pointer;display:block;overflow:hidden}
+.pt svg{width:100%;height:100%;display:block}
+#pviewer{position:absolute;inset:0;z-index:5;background:#000;display:flex;flex-direction:column}
+#pviewer[hidden]{display:none}
+.pvbar{flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 12px 8px}
+.pvbar span{font-size:13px;color:var(--t3)}
+#pv-img{flex:none;width:100%;aspect-ratio:1;background:#000}
+#pv-img svg{width:100%;height:100%;display:block}
+#pv-info{flex:1;min-height:0;padding:16px 20px;display:flex;flex-direction:column;gap:4px;overflow:auto}
+#pv-info b{font-size:16px;font-weight:500}
+#pv-info span{font-size:13px;color:var(--t3)}
+#pv-info p{margin:10px 0 0;font-size:16px;line-height:1.55;color:#d0d0d4}
+.pvnav{flex:none;display:flex;justify-content:space-between;padding:0 20px 38px}
+.pvnav button{width:54px;height:40px;border-radius:20px;border:1px solid var(--k4);background:none;color:#fff;font-size:20px;cursor:pointer}
+
+/* ---------- 메모 ---------- */
+.nh{display:flex;justify-content:space-between;align-items:center;padding-right:16px}
+.nh button{background:none;border:0;color:#fff;font:400 15px var(--ph);cursor:pointer;border:1px solid var(--k4);border-radius:14px;padding:5px 12px}
+.nr{display:block;width:calc(100% - 32px);margin:0 16px;text-align:left;background:var(--k2);border:0;border-radius:14px;padding:12px 14px;cursor:pointer;color:var(--t1);font-family:var(--ph);margin-bottom:8px}
+.nr:active{background:var(--k3)}
+.nr b{font-size:16px;font-weight:600;display:block}
+.nr span{font-size:13px;color:var(--t3);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.nbar{flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 8px 6px}
+#nt-body{flex:1;min-height:0;display:flex;flex-direction:column;padding:6px 18px 0;overflow:auto}
+.nt-title{background:none;border:0;outline:0;color:#fff;font:700 26px var(--ph);padding:4px 0 8px;width:100%;user-select:text;-webkit-user-select:text}
+.nt-text{flex:1;min-height:360px;background:none;border:0;outline:0;resize:none;color:#d6d6da;font:16.5px/1.65 var(--ph);width:100%;user-select:text;-webkit-user-select:text}
+.lkp{margin:auto 0;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;color:var(--t2);font-size:14px}
+.lkp input{width:150px;height:44px;text-align:center;letter-spacing:.7em;font:500 22px var(--ph);background:var(--k2);color:#fff;border:1px solid var(--k4);border-radius:12px;outline:0;user-select:text;-webkit-user-select:text}
+.lkp button{height:38px;padding:0 24px;border-radius:19px;border:0;background:#f2f2f3;color:#0b0b0c;font:600 14px var(--ph);cursor:pointer}
+.lkp small{height:16px;color:var(--t1)}
+
+/* ---------- 알림 배너 ---------- */
+#banner{position:absolute;left:8px;right:8px;top:8px;z-index:90;background:rgba(40,40,44,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:22px;padding:11px 14px;display:flex;gap:10px;align-items:center;color:#fff;transform:translateY(-140%);transition:transform .38s cubic-bezier(.2,.9,.3,1.1);cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.45);margin-top:32px}
+#banner.on{transform:none}
+#banner .ai{width:38px;height:38px;border-radius:9px;overflow:hidden;flex:none}
+#banner .ai svg{width:100%;height:100%;display:block}
+#banner .tx{min-width:0;flex:1}
+#banner b{font-size:14px;display:block}
+#banner span{font-size:14px;color:#cfcfd4;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#banner em{font-style:normal;font-size:12px;color:#8d8d94;align-self:flex-start}
+@media (prefers-reduced-motion:reduce){.app.on,#call.on,.b,.kbub,.ln{animation:none}#banner{transition:none}.typing i,.ktyp i,.ring .cl-av{animation:none}}
+button:focus-visible{outline:2px solid #fff;outline-offset:-2px}
+</style>
+
+<main id="stage">
+  <div id="fit">
+    <div id="phone">
+      <i class="sbtn" style="left:-3px;top:130px;height:30px"></i>
+      <i class="sbtn" style="left:-3px;top:190px;height:56px"></i>
+      <i class="sbtn" style="left:-3px;top:260px;height:56px"></i>
+      <i class="sbtn" style="right:-3px;top:210px;height:92px"></i>
+      <div id="bezel">
+        <div id="screen">
+          <div id="notch"></div>
+          <div id="sb">
+            <span class="l" id="clock">9:41</span>
+            <span class="r">
+              <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+              <svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 2.3c2.3 0 4.4.9 6 2.4l1.2-1.3A10.5 10.5 0 0 0 8.5.5C5.7.5 3.2 1.6 1.3 3.4l1.2 1.3a8.7 8.7 0 0 1 6-2.4zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.2-1.3a6.9 6.9 0 0 0-9.2 0l1.2 1.3c.9-.8 2.1-1.3 3.4-1.3zM8.5 9.3c.6 0 1.1.2 1.5.6L8.5 11.5 7 9.9c.4-.4.9-.6 1.5-.6z"/></svg>
+              <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="22" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="19" height="9" rx="2.2"/><path d="M24 4.5v4c.8-.3 1.5-1.1 1.5-2s-.7-1.7-1.5-2z" opacity=".5"/></svg>
+            </span>
+          </div>
+
+          <div id="lock" data-act="unlock">
+            <div class="lk-date" id="lk-date"></div>
+            <div class="lk-time" id="lk-time"></div>
+            <div class="lk-who">성윤오</div>
+            <div class="lk-n" id="lk-n"></div>
+            <div class="lk-hint">화면을 눌러 열기</div>
+          </div>
+
+          <div id="home">
+            <div class="grid" id="grid"></div>
+            <div class="dots"><i></i><i></i></div>
+            <div class="dock" id="dock"></div>
+          </div>
+
+          <!-- 전화 -->
+          <section class="app" id="app-phone">
+            <div class="pad47"></div>
+            <div class="view" id="pv-recents" hidden>
+              <div class="lt">최근 기록</div>
+              <div class="scroll" id="rc-rows"></div>
+            </div>
+            <div class="view" id="pv-contacts" hidden>
+              <div class="lt">연락처</div>
+              <div class="srch">검색</div>
+              <div class="scroll" id="ct-rows"></div>
+            </div>
+            <div class="view" id="pv-keypad">
+              <div class="dial" id="dial"></div>
+              <div class="kp" id="kp"></div>
+              <div class="callrow">
+                <button class="callbtn" data-act="dial" aria-label="전화 걸기"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button>
+                <button class="delbtn" id="delbtn" data-act="del" aria-label="지우기" style="visibility:hidden"><svg viewBox="0 0 24 24"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg></button>
+              </div>
+            </div>
+            <nav class="ptabs">
+              <button data-act="ph-tab" data-tab="recents"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm.5 5v5.2l4.3 2.5-.8 1.3-5-3V7h1.5z"/></svg>최근 기록</button>
+              <button data-act="ph-tab" data-tab="contacts"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>연락처</button>
+              <button data-act="ph-tab" data-tab="keypad" class="on"><svg viewBox="0 0 24 24"><circle cx="5" cy="4" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="19" cy="4" r="2"/><circle cx="5" cy="11" r="2"/><circle cx="12" cy="11" r="2"/><circle cx="19" cy="11" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="12" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><circle cx="12" cy="22" r="1.6"/></svg>키패드</button>
+            </nav>
+          </section>
+
+          <!-- 메시지 -->
+          <section class="app" id="app-sms">
+            <div class="view" id="sms-list">
+              <div class="pad47"></div>
+              <div class="lt">메시지</div>
+              <div class="srch">검색</div>
+              <div class="scroll" id="sms-rows"></div>
+              <div class="hs"></div>
+            </div>
+            <div class="view" id="sms-thread" hidden>
+              <div class="pad47" style="background:rgba(18,18,20,.96)"></div>
+              <div class="th-head">
+                <button class="back" data-act="sms-back"><svg viewBox="0 0 12 20"><path d="M10 2 2 10l8 8" fill="none" stroke="#d4d4d8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="sms-bk"></span></button>
+                <div class="th-who"><span id="sms-av"></span><span id="sms-nm"></span></div>
+                <span></span>
+              </div>
+              <div class="msgs" id="sms-msgs"></div>
+              <form class="cmp" id="sms-form" autocomplete="off">
+                <input id="sms-input" placeholder="문자 메시지" enterkeyhint="send">
+                <button class="go" id="sms-go" aria-label="보내기" disabled><svg viewBox="0 0 24 24"><path d="M12 3l7 8h-4.5v10h-5V11H5z"/></svg></button>
+              </form>
+              <div class="hs" style="background:var(--k1)"></div>
+            </div>
+          </section>
+
+          <!-- 카카오톡 -->
+          <section class="app" id="app-kakao">
+            <div class="view" id="kk-main">
+              <div class="pad47"></div>
+              <div class="khead"><b id="kk-title">친구</b><span>검색 · 설정</span></div>
+              <div class="scroll" id="kk-rows"></div>
+              <nav class="ktabs">
+                <button data-act="kk-tab" data-tab="friends" id="kt-friends"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>친구</button>
+                <button data-act="kk-tab" data-tab="chats" id="kt-chats"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>채팅<span class="bd" id="kk-tb"></span></button>
+              </nav>
+            </div>
+            <div class="view" id="kk-room" hidden>
+              <div class="pad47" style="background:#121214"></div>
+              <div class="kth">
+                <button class="back" data-act="kk-back" aria-label="뒤로">‹</button>
+                <b id="kk-nm"></b>
+              </div>
+              <div class="kmsgs" id="kk-msgs"></div>
+              <form class="kcmp" id="kk-form" autocomplete="off">
+                <span class="plus">+</span>
+                <input id="kk-input" placeholder="메시지 입력" enterkeyhint="send">
+                <button class="go" id="kk-go" type="submit">전송</button>
+              </form>
+              <div class="hs" style="background:var(--k1)"></div>
+            </div>
+          </section>
+
+          <!-- 썸바디 -->
+          <section class="app" id="app-sb">
+            <div class="view" id="sb-main">
+              <div class="pad47"></div>
+              <div class="sbh"><span class="wm">SOMEBODY</span><span class="sbr" id="sb-count"></span></div>
+              <div class="scroll" id="sb-rows"></div>
+              <nav class="ktabs sbtabs">
+                <button data-act="sb-tab" data-tab="discover" id="st-discover"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm0 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>탐색</button>
+                <button data-act="sb-tab" data-tab="chats" id="st-chats"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>대화<span class="bd" id="sb-tb"></span></button>
+              </nav>
+            </div>
+            <div class="view" id="sb-room" hidden>
+              <div class="pad47" style="background:rgba(18,18,20,.96)"></div>
+              <div class="th-head">
+                <button class="back" data-act="sb-back"><svg viewBox="0 0 12 20"><path d="M10 2 2 10l8 8" fill="none" stroke="#d4d4d8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>탐색</span></button>
+                <div class="th-who"><span id="sb-av"></span><span id="sb-nm"></span></div>
+                <span></span>
+              </div>
+              <div class="msgs" id="sb-msgs"></div>
+              <form class="cmp" id="sb-form" autocomplete="off">
+                <input id="sb-input" placeholder="익명으로 보내기" enterkeyhint="send">
+                <button class="go" id="sb-go" aria-label="보내기" disabled><svg viewBox="0 0 24 24"><path d="M12 3l7 8h-4.5v10h-5V11H5z"/></svg></button>
+              </form>
+              <div class="hs" style="background:var(--k1)"></div>
+            </div>
+          </section>
+
+          <!-- 사진 -->
+          <section class="app" id="app-photos">
+            <div class="pad47"></div>
+            <div class="lt">보관함</div>
+            <div class="phs" id="ph-sub"></div>
+            <div class="scroll" id="ph-grid"></div>
+            <div class="hs"></div>
+            <div id="pviewer" hidden>
+              <div class="pad47"></div>
+              <div class="pvbar"><button class="back" data-act="photo-close"><svg viewBox="0 0 12 20"><path d="M10 2 2 10l8 8" fill="none" stroke="#d4d4d8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>보관함</button><span id="pv-count"></span></div>
+              <div id="pv-img"></div>
+              <div id="pv-info"></div>
+              <div class="pvnav"><button data-act="photo-prev" aria-label="이전">‹</button><button data-act="photo-next" aria-label="다음">›</button></div>
+            </div>
+          </section>
+
+          <!-- 메모 -->
+          <section class="app" id="app-notes">
+            <div class="view" id="nt-list">
+              <div class="pad47"></div>
+              <div class="nh"><div class="lt">메모</div><button data-act="note-new">새 메모</button></div>
+              <div class="scroll" id="nt-rows"></div>
+              <div class="hs"></div>
+            </div>
+            <div class="view" id="nt-view" hidden>
+              <div class="pad47"></div>
+              <div class="nbar"><button class="back" data-act="note-back"><svg viewBox="0 0 12 20"><path d="M10 2 2 10l8 8" fill="none" stroke="#d4d4d8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>메모</button></div>
+              <div id="nt-body"></div>
+              <div class="hs"></div>
+            </div>
+          </section>
+
+          <section id="call"></section>
+          <div id="banner" data-act="banner"></div>
+          <div id="toast"></div>
+          <button id="hbar" data-act="home" aria-label="홈으로"><i></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tools">
+    <button id="btn-incoming">수신 전화 테스트</button>
+    <button id="btn-reset">처음 상태로</button>
+  </div>
+  <p class="hint">성윤오의 휴대폰입니다. 화면을 눌러 잠금을 풀고, 아래 홈 바로 홈 화면에 돌아갈 수 있어요.</p>
+</main>
+
+<script>
+(()=>{
+'use strict';
+
+/* =====================================================================
+   ★ 여기만 고치면 돼요: 연락처 · 답장 · 통화 대사 · 사진 · 메모 · 썸바디 프로필
+   - rules: 위에서부터 차례로 검사. 보낸 문자에 match 단어가 하나라도 들어 있으면
+     그 rule의 reply가 순서대로 도착해요 (공백은 무시). 구체적인 단어를 위쪽에 두세요.
+   - fallback: 어떤 rule에도 안 걸릴 때의 답장 ([]면 답장 없음)
+   - saved:false 는 연락처에 저장되지 않은 번호 (문자·카톡에는 번호나 닉네임으로 보임)
+   - call.lines: 통화 대사. wait = 대사 전 대기(ms), who = 'them'(기본) / 'me' / 'sys'
+   - call.hangupAfter: 마지막 대사 뒤 몇 ms 후 상대가 끊을지 (null이면 안 끊음)
+   ===================================================================== */
+const CONFIG = {
+  meName: '성윤오',
+  contacts: [
+    { id:'ryung', name:'백이령', number:'010-8800-1204',
+      sms:{
+        history:[{from:'them', text:'문 안 잠갔던데요. 일부러예요?', ago:130},{from:'me', text:'곧 들어갑니다.', ago:122}],
+        rules:[
+          {match:['보고싶','보고 싶'], reply:['보고 싶어요.','...말해놓고 보니까 좀 웃기네요']},
+          {match:['어디'], reply:['알려주면 재미없잖아요','근데 생각보다 가까워요']},
+          {match:['집','들어가','들어올'], reply:['불 켜놓고 기다릴게요','아니, 끄고 기다릴까요']},
+          {match:['썸바디'], reply:['그 앱 아직 안 지웠어요?','지우지 마요. 아직 쓸모 있으니까']},
+          {match:['그만','닥쳐','조용'], reply:['싫어요','당신이 먼저 시작했잖아요']}
+        ],
+        fallback:['읽었어요.','답은 나중에 직접 들을게요']
+      },
+      kakao:{
+        status:'보고 있어요',
+        history:[
+          {from:'me', text:'지금 어디입니까.', ago:40},
+          {from:'them', text:'알려주면 재미없잖아요', ago:38},
+          {from:'them', text:'보지 않으려 해도 보고 싶어지죠, 내가?', ago:3}
+        ],
+        unread:1,
+        rules:[
+          {match:['보고싶','보고 싶'], reply:['보고 싶어요.','대답은 안 해도 돼요. 읽었으니까']},
+          {match:['누구'], reply:['모르는 척이 제일 서툴러요, 당신은']},
+          {match:['안 보','안보','보지 않'], reply:['거짓말','방금도 이 대화창 열어놨잖아요']},
+          {match:['어디'], reply:['당신 방 문 앞','…농담이에요. 반쯤은요']},
+          {match:['죽','끝'], reply:['아직요','끝은 내가 정해요']}
+        ],
+        fallback:['ㅎ','계속 말해봐요. 듣고 있으니까']
+      },
+      call:{
+        ringMs:2200, hangupAfter:3200,
+        lines:[
+          {text:'받았네요. 안 받을 줄 알았는데.', wait:700},
+          {who:'me', text:'용건만 하세요.', wait:1700},
+          {text:'용건이요? 별거 없어요. 그냥 목소리가 듣고 싶었어요.', wait:1700},
+          {who:'me', text:'...지금 어디입니까.', wait:2000},
+          {text:'알면서 왜 물어요.', wait:1800},
+          {text:'보고 싶어요.', wait:2600},
+          {who:'me', text:'......', wait:1600},
+          {text:'대답 안 해도 돼요. 들었으니까.', wait:2000}
+        ],
+        incomingLines:[
+          {text:'여보세요? 말 안 해도 돼요. 숨소리로 알 수 있으니까.', wait:800},
+          {text:'오늘은 왜 이렇게 늦어요.', wait:1900},
+          {who:'me', text:'신경 쓰지 마세요.', wait:1900},
+          {text:'그게 되면 이 전화도 안 했죠.', wait:1900},
+          {text:'보고 싶어요.', wait:2600},
+          {text:'...끊을게요. 문은 열어둘게요.', wait:2200}
+        ]
+      }
+    },
+    { id:'park', name:'박 형사', number:'010-4120-7733',
+      sms:{
+        unread:1,
+        history:[{from:'them', text:'성윤오 씨, 연락 부탁드립니다. 확인할 게 있습니다.', ago:600}],
+        rules:[
+          {match:['무슨','왜','뭔데'], reply:['전화로 말씀드리겠습니다.','받지 않으시면 찾아뵙겠습니다.']},
+          {match:['변호사'], reply:['필요하시면 그렇게 하셔도 됩니다.','다만 아직은 참고인입니다']}
+        ],
+        fallback:['확인 후 다시 연락드리겠습니다.']
+      },
+      call:{
+        ringMs:2000, hangupAfter:2200,
+        lines:[
+          {text:'박진호입니다. 성윤오 씨, 맞으시죠?', wait:800},
+          {text:'접속 기록 몇 건 때문에 여쭙겠습니다.', wait:1900},
+          {text:'목요일 밤 11시쯤, 어디 계셨습니까.', wait:2200},
+          {who:'me', text:'...집에 있었습니다.', wait:2000},
+          {text:'그렇습니까. 일단 알겠습니다. 또 연락드리겠습니다.', wait:2200}
+        ]
+      }
+    },
+    /* ---- 저장되지 않은 번호들 ---- */
+    { id:'u5527', name:'010-5527-9031', saved:false, ini:'?', number:'010-5527-9031',
+      sms:{
+        unread:1,
+        history:[{from:'them', text:'오늘 밤 11시, 그곳에서 기다릴게요. 혼자 오세요.', ago:14}],
+        rules:[
+          {match:['누구'], reply:['곧 알게 될 거예요']},
+          {match:['어디','그곳'], reply:['당신이 제일 잘 아는 곳이요']},
+          {match:['안가','안 가','싫'], reply:['그래도 기다릴게요','끝까지']}
+        ],
+        fallback:['...']
+      },
+      call:{
+        ringMs:3200, hangupAfter:1800,
+        lines:[
+          {who:'sys', text:'(말없이 숨소리만 들린다)', wait:1500},
+          {text:'...나왔네요.', wait:2600},
+          {text:'오늘 밤 11시. 잊지 말아요.', wait:2400}
+        ]
+      }
+    },
+    { id:'u4421', name:'070-4421-8800', saved:false, ini:'#', number:'070-4421-8800',
+      sms:{
+        unread:1,
+        history:[{from:'them', text:'[국제발신] 고객님 명의로 해외 결제 승인 요청이 접수되었습니다. 본인이 아니면 1, 본인이면 2를 회신하세요.', ago:300}],
+        rules:[
+          {match:['1'], reply:['본인 확인이 불가합니다. 상담원이 곧 연락드립니다.']},
+          {match:['2'], reply:['확인되었습니다. 감사합니다.']}
+        ],
+        fallback:[]
+      }
+    },
+    { id:'u1670', name:'1670-4410', saved:false, ini:'#', number:'1670-4410',
+      sms:{
+        history:[{from:'them', text:'(광고) 잠 못 드는 밤, 대화 상대가 필요하신가요? 가까운 곳의 누군가가 기다리고 있습니다. 무료수신거부 080-555-0112', ago:1300}],
+        rules:[{match:['거부','수신거부'], reply:['수신거부 처리되었습니다. (처리까지 최대 영업일 7일)']}],
+        fallback:[]
+      }
+    },
+    { id:'uus', name:'+1 415-555-0132', saved:false, ini:'+', number:'14155550132',
+      sms:{
+        unread:1,
+        history:[{from:'them', text:'I saw you tonight. You didn’t see me.', ago:200}],
+        rules:[
+          {match:['who','누구'], reply:['Someone who was paying attention.','Unlike you.']},
+          {match:['where','어디'], reply:['Closer than the last time.']}
+        ],
+        fallback:['Goodnight, Yun-o.']
+      }
+    },
+    { id:'u3380', name:'010-3380-7716', saved:false, ini:'?', number:'010-3380-7716',
+      sms:{
+        unread:2,
+        history:[
+          {from:'them', text:'윤오 씨, 왜 전화 안 받아요?', ago:75},
+          {from:'them', text:'어젯밤엔 분명 받았잖아요. 보고 싶다고 했던 건 당신이에요.', ago:74}
+        ],
+        rules:[
+          {match:['미안','죄송'], reply:['사과는 필요 없어요','오늘 안 오면 그땐 정말 끝이에요']},
+          {match:['누구','모르'], reply:['...또 그러네요','기억 못 하는 척하는 거 알아요']}
+        ],
+        fallback:['읽었으면서 왜 답이 없어요','...또 읽씹?']
+      },
+      call:{
+        ringMs:2600, hangupAfter:2000,
+        lines:[
+          {text:'왜 이제 받아요.', wait:900},
+          {text:'나 지금 당신 집 앞이에요.', wait:2200},
+          {text:'...농담이에요. 아직은.', wait:2200}
+        ]
+      }
+    },
+    { id:'kyuna', name:'유나', saved:false, ini:'유', number:'010-6141-2290',
+      kakao:{
+        kname:'유나', unread:2,
+        history:[{from:'them', text:'오빠 어제 그 얘기 사실이야? 나 무서워', ago:55},{from:'them', text:'답장해줘 제발', ago:54}],
+        rules:[
+          {match:['아니','괜찮'], reply:['정말? 그럼 지금 나와줄 수 있어?','집 앞이야']},
+          {match:['누구'], reply:['장난치지 마 진짜...','어제 같이 있었잖아']}
+        ],
+        fallback:['읽고 있는 거 알아...']
+      }
+    },
+    { id:'ksera', name:'세라', saved:false, ini:'세', number:'010-7709-1183',
+      kakao:{
+        kname:'세라', unread:1,
+        history:[{from:'them', text:'윤오 씨, 목요일 밤 약속 잊지 않았죠? 같은 자리, 같은 시간.', ago:230}],
+        rules:[
+          {match:['누구','기억'], reply:['어머, 벌써 잊었어요?','서운하네요']},
+          {match:['알겠','갈게','가겠'], reply:['좋아요. 불은 켜두지 말고 와요']},
+          {match:['안 가','안가'], reply:['그래요? 그럼 내가 찾아가면 되겠네요']}
+        ],
+        fallback:['답장이 늦네요. 나는 기다리는 거 잘해요']
+      }
+    },
+    { id:'kanon', name:'(알 수 없음)', saved:false, ini:'?', number:'',
+      kakao:{
+        kname:'(알 수 없음)', unread:1,
+        history:[{from:'them', text:'지금 당신 뒤에 서 있는 사람, 보이나요?', ago:9}],
+        rules:[
+          {match:['누구'], reply:['돌아보지 마요']},
+          {match:['뒤'], reply:['아직은요']}
+        ],
+        fallback:['...']
+      }
+    },
+    { id:'khrin', name:'하린', saved:false, ini:'하', number:'',
+      kakao:{
+        kname:'하린', unread:1,
+        history:[{from:'them', text:'썸바디에서 알림 받고 연락했어요. 우리 가까이 있대요.', ago:18}],
+        rules:[
+          {match:['어디'], reply:['반경 80m. 창밖 한번 보세요']},
+          {match:['누구','모르'], reply:['프로필에 얼굴 있었잖아요','눈이 참 서늘하던데']}
+        ],
+        fallback:['답 기다릴게요']
+      }
+    }
+  ],
+
+  /* ---- 썸바디 앱: 낯선 사용자 프로필 ---- */
+  somebody: [
+    { id:'p_walk', name:'밤산책', dist:'40m', age:'27', seed:41, matched:true, unread:1,
+      bio:'불 꺼진 골목을 좋아해요. 같이 걸어줄 사람.', tags:['야행성','조용한 사람'],
+      history:[{from:'sys', text:'매칭되었어요 · 서로 모르는 사이'},{from:'them', text:'근처에 계신 거 맞죠? 검은 우산 들고 있어요.', ago:8}],
+      rules:[
+        {match:['어디'], reply:['삼거리 편의점 앞이요','보이면 손 흔들어 주세요']},
+        {match:['이름','누구'], reply:['이름은 나중에요. 여기선 서로 모르는 게 규칙이잖아요']},
+        {match:['안녕','하이'], reply:['안녕하세요. 늦게까지 안 주무시네요']}
+      ],
+      fallback:['음... 더 말해줄래요?']
+    },
+    { id:'p_rain', name:'검은우산', dist:'150m', age:'31', seed:43, matchBack:true,
+      bio:'비 오는 날에만 접속해요.', tags:['비','익명'],
+      opening:['매칭 고마워요.','오늘 비 오네요. 우산 있어요?'],
+      rules:[{match:['우산'], reply:['없으면 같이 쓰면 되죠','...농담이에요. 반쯤은요']}],
+      fallback:['비 오는 날엔 솔직해지더라고요']
+    },
+    { id:'p_n', name:'N', dist:'0m', age:'?', seed:47, blur:7, matchBack:true,
+      bio:'당신 바로 옆.', tags:['신원 미상','거리 0m'],
+      opening:['...','화면 밝기 낮춰요. 보여요.'],
+      rules:[
+        {match:['누구'], reply:['이 앱을 만든 사람은 당신이잖아요','나는 그냥 사용자예요. 한 명의 Somebody']},
+        {match:['어디','0m'], reply:['반경 0m는 그런 뜻이에요']}
+      ],
+      fallback:['읽고 있어요. 계속 써요']
+    },
+    { id:'p_harin', name:'하린', dist:'80m', age:'26', seed:49, matchBack:true,
+      bio:'오늘 밤은 외롭지 않았으면.', tags:['대화','밤'],
+      opening:['안녕하세요!','윤오 씨 맞죠? 프로필 사진이 낯익어서요'],
+      rules:[{match:['아니','누구'], reply:['아, 제가 착각했나 봐요','근데 눈이 똑같아요']}],
+      fallback:['그렇구나... 더 얘기해요']
+    },
+    { id:'p_m', name:'M_', dist:'310m', age:'33', seed:51, matchBack:false,
+      bio:'답장은 느려요. 대신 끝까지 읽어요.', tags:['느린 답장'],
+      opening:[], rules:[], fallback:[]
+    },
+    { id:'p_del', name:'이름 없음', dist:'1.2km', age:'-', seed:53, matched:true,
+      bio:'탈퇴한 사용자입니다.', tags:['탈퇴'],
+      history:[{from:'sys', text:'매칭되었어요 · 서로 모르는 사이'},{from:'me', text:'아직 거기 있어요?', ago:4300},{from:'sys', text:'상대가 이 계정을 삭제했습니다'}],
+      rules:[], fallback:[]
+    }
+  ],
+
+  /* ---- 사진 (모노톤 갤러리) ---- */
+  photos:[
+    {kind:'city', seed:3,  date:'10월 29일 23:12', place:'마포구 · 옥상', cap:'야간 근무 끝. 불 켜진 창이 몇 개인지 세어 봤다.'},
+    {kind:'door', seed:5,  date:'10월 29일 22:48', place:'서교동', cap:'412호. 문틈 아래 불빛. 아직 안 잤다.'},
+    {kind:'map',  seed:7,  date:'10월 27일 01:20', place:'작업용 캡처', cap:'반경 200m 로그. 겹치는 구간만 표시.'},
+    {kind:'figure',seed:9, date:'10월 25일 23:55', place:'골목', cap:'초점이 나갔다. 일부러는 아니다.'},
+    {kind:'rain', seed:11, date:'10월 24일 21:03', place:'택시 안', cap:'비. 창밖 불빛이 전부 번졌다.'},
+    {kind:'paper',seed:13, date:'10월 22일 04:10', place:'메모 사진', cap:'지우기 전에 한 장만 남겨 둔다.'},
+    {kind:'stairs',seed:15,date:'10월 20일 00:31', place:'비상계단', cap:'7층에서 내려다본 계단. 소리가 잘 울린다.'},
+    {kind:'car',  seed:17, date:'10월 18일 02:44', place:'국도', cap:'앞차 미등이 한참 따라왔다.'},
+    {kind:'city', seed:19, date:'10월 15일 05:20', place:'한강 북단', cap:'새벽. 아무도 없는 줄 알았다.'},
+    {kind:'door', seed:21, date:'10월 12일 23:41', place:'현관', cap:'이령의 방 문. 3cm 열려 있다.'},
+    {kind:'figure',seed:23,date:'10월 9일 22:10',  place:'지하철 3호선', cap:'막차. 맞은편 사람이 계속 이쪽을 봤다.'},
+    {kind:'map',  seed:25, date:'10월 3일 03:02',  place:'작업용 캡처', cap:'#0412 접속 위치. 이틀째 같은 자리.'}
+  ],
+
+  /* ---- 메모 (locked:true 는 4자리 번호 필요) ---- */
+  notes:[
+    {id:'n1', title:'이령', ago:130, text:'첫 만남: 12월 4일.\n\n같이 사는 건 편해서가 아니라 감시하기 쉬워서다. 저쪽도 같은 생각일 것.\n\n오늘도 내 방 문이 3cm 열려 있었다. 내가 닫은 적 없는데.'},
+    {id:'n2', title:'규칙', ago:900, text:'하나. 번호는 한 번만 쓴다.\n둘. 이름을 먼저 묻지 않는다.\n셋. 같은 장소에 두 번 가지 않는다.\n넷. 이령에게는 말하지 않는다.\n   (...이미 알고 있을 것 같다)'},
+    {id:'n3', title:'썸바디 로그', ago:2000, text:'반경 알림: 200m 이내 ping\n접속 로그: 매일 04:00 자동 삭제\n테스트 계정 #0412 — 지우지 말 것\n\n오늘 새로 들어온 사용자 중 거리 0m가 하나 있다.\n0m라는 건 불가능한데.'},
+    {id:'n4', title:'목요일', ago:400, text:'목요일 밤 11시.\n세라는 같은 자리에서 기다린다고 했다.\n안 갈 것. 가면 안 된다.\n\n(그런데 왜 일정에 적어 놨지)'},
+    {id:'n5', title:'장보기', ago:3000, text:'계란\n우유\n세제\n전구 (복도)'},
+    {id:'n6', title:'잠긴 메모', ago:5000, locked:true, code:'1204', text:'12.04 — 그날 밤 사진은 지웠지만 클라우드에는 남아 있다.\n\n이령이 알고 있다면 이미 끝난 게임이다.\n\n"보고 싶다"는 말은 협박일까, 진심일까. 어느 쪽이든 나는 답을 못 했다.'}
+  ],
+
+  unknownCall:{ ringMs:1600, hangupAfter:2500,
+    lines:[{who:'sys', text:'지금 거신 전화번호는 없는 번호입니다. 다시 확인하시고 걸어주십시오.', wait:900}] },
+
+  // 처음 보이는 최근 통화 (ago=분 전, count=연속 횟수). number를 안 쓰면 id 연락처의 번호
+  recents:[
+    {number:'010-5527-9031', dir:'missed', ago:16, count:3},
+    {id:'ryung', dir:'missed', ago:52},
+    {number:'010-3380-7716', dir:'missed', ago:76, count:2},
+    {number:'070-4421-8800', dir:'missed', ago:310},
+    {id:'park', dir:'missed', ago:640, count:2},
+    {number:'14155550132', dir:'missed', ago:720},
+    {id:'ryung', dir:'in', ago:1600, dur:312, seen:true},
+    {id:'park', dir:'out', ago:2900, dur:48, seen:true}
+  ],
+  incomingFrom:'ryung',
+
+  // 잠금을 푼 뒤 자동으로 도착하는 메시지 (at = 잠금 해제 후 ms)
+  events:[
+    {at:9000,  app:'kakao', id:'ryung', lines:['지금 방에서 나올 때 문소리 조심해요','들켜도 상관없긴 하지만']},
+    {at:24000, app:'sms',   id:'u5527', lines:['10시 40분이에요.']},
+    {at:40000, app:'sb',    id:'p_walk', lines:['아직 그 자리에 계신가요?']}
+  ]
+};
+
+/* ============================ 엔진 ============================ */
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const digits=s=>String(s==null?'':s).replace(/\D/g,'');
+const norm=s=>String(s).toLowerCase().replace(/\s+/g,'');
+const byId=id=>CONFIG.contacts.find(c=>c.id===id);
+const DOW=['일','월','화','수','목','금','토'];
+function fmtTime(d){let h=d.getHours();const m=d.getMinutes();const ap=h<12?'오전':'오후';h=h%12||12;return `${ap} ${h}:${String(m).padStart(2,'0')}`}
+function dayDiff(ts){const d=new Date(ts),n=new Date();return Math.round((new Date(n.getFullYear(),n.getMonth(),n.getDate())-new Date(d.getFullYear(),d.getMonth(),d.getDate()))/864e5)}
+function dayKey(ts){const d=new Date(ts);return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()}
+function rel(ts){const n=dayDiff(ts),d=new Date(ts);if(n<=0)return fmtTime(d);if(n===1)return '어제';return `${d.getMonth()+1}월 ${d.getDate()}일`}
+function dayWord(ts){const n=dayDiff(ts),d=new Date(ts);if(n<=0)return '오늘';if(n===1)return '어제';return `${d.getMonth()+1}월 ${d.getDate()}일`}
+function fullDay(ts){const d=new Date(ts);return `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 ${DOW[d.getDay()]}요일`}
+function fmtNum(s){const d=digits(s);if(d.length<=3)return d;if(d.length<=7)return d.slice(0,3)+'-'+d.slice(3);return d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7,11)}
+function mmss(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+const ent=(app,id)=>app==='sb'?CONFIG.somebody.find(p=>p.id===id):byId(id);
+const cfgOf=(app,e)=>app==='sb'?e:e[app];
+const dname=(app,e)=>app==='kakao'?((e.kakao&&e.kakao.kname)||e.name):e.name;
+const SHADES=['#3b3b3f','#2d2d30','#4a4a4f','#252528','#57575c'];
+const shade=e=>SHADES[e.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0)%SHADES.length];
+const ini=(app,e)=>e.ini||dname(app,e)[0];
+const avatar=(app,e,sz)=>`<span class="av" style="width:${sz}px;height:${sz}px;font-size:${Math.round(sz*.42)}px;background:${shade(e)}">${esc(ini(app,e))}</span>`;
+const kav=(app,e,cls)=>`<span class="kav ${cls||''}" style="background:${shade(e)}">${esc(ini(app,e))}</span>`;
+const callName=(c,number)=>c?c.name:fmtNum(number);
+
+const PH='M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z';
+
+/* ---------- 모노톤 앱 아이콘 ---------- */
+const IC={
+  phone:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#ececee"/><path transform="translate(14 14) scale(1.4)" fill="#0b0b0c" d="${PH}"/></svg>`,
+  sms:`<svg viewBox="0 0 60 60"><defs><linearGradient id="gs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8d8d93"/><stop offset="1" stop-color="#46464b"/></linearGradient></defs><rect width="60" height="60" fill="url(#gs)"/><ellipse cx="30" cy="28" rx="18" ry="14.5" fill="#f2f2f3"/><path d="M17 38l-4 9 11-5z" fill="#f2f2f3"/></svg>`,
+  kakao:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#26262a"/><ellipse cx="30" cy="28" rx="18" ry="14.5" fill="#f2f2f3"/><path d="M21 40l-2 9 11-6z" fill="#f2f2f3"/><circle cx="23" cy="28" r="2" fill="#26262a"/><circle cx="30" cy="28" r="2" fill="#26262a"/><circle cx="37" cy="28" r="2" fill="#26262a"/></svg>`,
+  sb:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#000"/><circle cx="30" cy="30" r="23" fill="none" stroke="#fff" stroke-opacity=".28"/><circle cx="30" cy="30" r="15" fill="none" stroke="#fff" stroke-opacity=".6"/><circle cx="30" cy="30" r="5" fill="#fff"/></svg>`,
+  photos:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#e6e6e8"/><g opacity=".9"><circle cx="30" cy="19" r="9" fill="#222"/><circle cx="41" cy="30" r="9" fill="#6d6d73"/><circle cx="30" cy="41" r="9" fill="#a8a8ae"/><circle cx="19" cy="30" r="9" fill="#444"/></g></svg>`,
+  camera:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#8b8b90"/><rect x="9" y="17" width="42" height="28" rx="6" fill="#222225"/><circle cx="30" cy="31" r="10" fill="#5e5e63"/><circle cx="30" cy="31" r="6" fill="#111"/><rect x="38" y="13" width="8" height="5" rx="2" fill="#222225"/></svg>`,
+  maps:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#2b2b2e"/><path d="M0 40L60 20v10L0 50z" fill="#4a4a4f"/><path d="M34 0h8v60h-8z" fill="#3a3a3e"/><circle cx="24" cy="26" r="7" fill="#f2f2f3"/><circle cx="24" cy="26" r="2.6" fill="#2b2b2e"/></svg>`,
+  weather:`<svg viewBox="0 0 60 60"><defs><linearGradient id="gw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3a3f"/><stop offset="1" stop-color="#8c8c92"/></linearGradient></defs><rect width="60" height="60" fill="url(#gw)"/><circle cx="22" cy="23" r="9" fill="#d8d8dc"/><path d="M18 44a8 8 0 0 1 2-15.7 11 11 0 0 1 21 2.4A6.7 6.7 0 0 1 40 44z" fill="#fff"/></svg>`,
+  clock:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#000"/><circle cx="30" cy="30" r="22" fill="#f2f2f3"/><path d="M30 14v17l10 6" stroke="#000" stroke-width="3" stroke-linecap="round" fill="none"/></svg>`,
+  notes:`<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#e4e4e6"/><rect width="60" height="17" fill="#6d6d73"/><path d="M10 29h40M10 38h40M10 47h26" stroke="#9a9aa0" stroke-width="2"/></svg>`,
+  settings:`<svg viewBox="0 0 60 60"><defs><linearGradient id="gg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9b9be"/><stop offset="1" stop-color="#76767c"/></linearGradient></defs><rect width="60" height="60" fill="url(#gg)"/><circle cx="30" cy="30" r="17" fill="none" stroke="#2a2a2d" stroke-width="5" stroke-dasharray="5.34 5.34"/><circle cx="30" cy="30" r="13" fill="#2a2a2d"/><circle cx="30" cy="30" r="6" fill="#a5a5ab"/></svg>`
+};
+function calIcon(){const d=new Date();return `<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#f2f2f3"/><text x="30" y="15" text-anchor="middle" font-size="10" font-weight="700" fill="#555" font-family="sans-serif">${DOW[d.getDay()]}요일</text><text x="30" y="46" text-anchor="middle" font-size="30" font-weight="300" fill="#111" font-family="sans-serif">${d.getDate()}</text></svg>`}
+const APPICON={sms:IC.sms,kakao:IC.kakao,sb:IC.sb};
+
+/* ---------- 사진용 모노톤 장면 생성 ---------- */
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function scene(kind,seed,uid){
+  const r=rng(seed), P=n=>Math.round(n*10)/10; let b='';
+  const wins=(x,y,w,h)=>{let s='';const n=Math.floor(w*h/380);for(let k=0;k<n;k++)if(r()<.3)s+=`<rect x="${P(x+3+r()*(w-9))}" y="${P(y+4+r()*(h-12))}" width="3" height="4" fill="#e6e6ea" opacity="${P(.25+r()*.6)}"/>`;return s};
+  if(kind==='city'){
+    let x=-10;while(x<300){const w=26+r()*30,h=70+r()*130;b+=`<rect x="${P(x)}" y="${P(300-h)}" width="${P(w)}" height="${P(h)}" fill="${['#17171a','#1f1f23','#121214'][Math.floor(r()*3)]}"/>`+wins(x,300-h,w,h);x+=w+2}
+    b+=`<circle cx="${P(200+r()*60)}" cy="50" r="14" fill="#d8d8dc" opacity=".5" filter="url(#bl${uid})"/><rect y="190" width="300" height="110" fill="url(#fg${uid})"/>`;
+  }else if(kind==='stairs'){
+    b+=`<rect width="300" height="300" fill="#0b0b0d"/>`;let y=300;
+    for(let i=0;i<9;i++){const ny=y-(y-90)*.3;b+=`<rect x="${i*12}" y="${P(ny)}" width="${300-i*24}" height="${P(y-ny)}" fill="${i%2?'#1c1c1f':'#2e2e32'}"/>`;y=ny}
+    b+=`<rect x="108" y="82" width="84" height="10" fill="#f0f0f2" opacity=".85" filter="url(#bl${uid})"/>`;
+  }else if(kind==='door'){
+    b+=`<rect x="92" y="50" width="116" height="250" fill="#070708"/><rect x="100" y="58" width="100" height="242" fill="#101012"/><circle cx="184" cy="190" r="4" fill="#6a6a70"/><rect x="128" y="96" width="44" height="18" fill="#2a2a2e"/><text x="150" y="110" text-anchor="middle" font-size="12" fill="#aaa" font-family="sans-serif">${100+Math.floor(r()*500)}</text>`+
+       `<rect x="100" y="290" width="100" height="10" fill="#f2f2f4" opacity=".7" filter="url(#bb${uid})"/><rect x="100" y="296" width="100" height="3" fill="#fff" opacity=".9"/>`;
+  }else if(kind==='rain'){
+    for(let k=0;k<16;k++)b+=`<circle cx="${P(r()*300)}" cy="${P(r()*300)}" r="${P(8+r()*20)}" fill="#d4d4d8" opacity="${P(.15+r()*.4)}" filter="url(#bb${uid})"/>`;
+    for(let k=0;k<40;k++){const x=r()*300,y=r()*300;b+=`<path d="M${P(x)} ${P(y)} l-2 ${P(14+r()*30)}" stroke="#c8c8cc" stroke-width=".8" opacity="${P(.1+r()*.25)}"/>`}
+  }else if(kind==='figure'){
+    b+=`<circle cx="${P(120+r()*60)}" cy="120" r="70" fill="#e0e0e4" opacity=".35" filter="url(#bb${uid})"/><g filter="url(#bl${uid})"><ellipse cx="150" cy="118" rx="20" ry="25" fill="#040405"/><path d="M92 300 C98 210 128 148 150 146 C172 148 202 210 208 300 Z" fill="#040405"/></g><rect y="200" width="300" height="100" fill="url(#fg${uid})"/>`;
+  }else if(kind==='map'){
+    b+=`<rect width="300" height="300" fill="#161618"/>`;
+    for(let k=0;k<=300;k+=30)b+=`<path d="M${k} 0V300M0 ${k}H300" stroke="#27272b" stroke-width="1"/>`;
+    for(let k=0;k<4;k++)b+=`<path d="M${P(r()*300)} 0 L${P(r()*300)} 300" stroke="#37373c" stroke-width="${P(2+r()*3)}"/>`;
+    let pts=[];for(let k=0;k<6;k++)pts.push([P(30+r()*240),P(30+r()*240)]);
+    b+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#ececee" stroke-width="1.6" stroke-dasharray="5 4"/>`;
+    pts.forEach((p,i)=>{b+=`<circle cx="${p[0]}" cy="${p[1]}" r="${i===pts.length-1?7:4}" fill="${i===pts.length-1?'#fff':'#9a9aa0'}"/>`;if(i===pts.length-1)b+=`<circle cx="${p[0]}" cy="${p[1]}" r="16" fill="none" stroke="#fff" opacity=".5"/>`});
+    b+=`<circle cx="150" cy="150" r="120" fill="none" stroke="#fff" stroke-opacity=".12"/>`;
+  }else if(kind==='paper'){
+    b+=`<g transform="rotate(${P(-6+r()*12)} 150 150)"><rect x="52" y="42" width="200" height="226" fill="#0a0a0a" opacity=".5" transform="translate(6 8)"/><rect x="52" y="42" width="200" height="226" fill="#c9c9cc"/>`;
+    for(let k=0;k<9;k++){const w=50+r()*110;b+=`<path d="M70 ${72+k*22} h${P(w)}" stroke="#26262a" stroke-width="2.4" opacity=".85"/>`;if(r()<.3)b+=`<path d="M66 ${72+k*22} h${P(w+8)}" stroke="#000" stroke-width="3.4"/>`}
+    b+=`</g>`;
+  }else{ // car
+    b+=`<path d="M0 220 L300 220 M0 300 L120 220 M300 300 L180 220" stroke="#2a2a2e" stroke-width="2"/>`;
+    for(let k=0;k<2;k++)b+=`<circle cx="${k?190:110}" cy="190" r="22" fill="#f2f2f4" opacity=".85" filter="url(#bb${uid})"/><circle cx="${k?190:110}" cy="190" r="6" fill="#fff"/>`;
+    for(let k=0;k<7;k++)b+=`<circle cx="${P(r()*300)}" cy="${P(60+r()*100)}" r="${P(3+r()*9)}" fill="#d0d0d4" opacity="${P(.1+r()*.25)}" filter="url(#bl${uid})"/>`;
+  }
+  const top=kind==='paper'?'#303033':kind==='map'?'#161618':kind==='door'?'#26262a':'#2b2b2f';
+  return `<svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="bg${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset="1" stop-color="#09090a"/></linearGradient><linearGradient id="fg${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a8a90" stop-opacity="0"/><stop offset="1" stop-color="#8a8a90" stop-opacity=".45"/></linearGradient><radialGradient id="vg${uid}" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".7"/></radialGradient><filter id="bl${uid}"><feGaussianBlur stdDeviation="4"/></filter><filter id="bb${uid}"><feGaussianBlur stdDeviation="9"/></filter></defs><rect width="300" height="300" fill="url(#bg${uid})"/>${b}<rect width="300" height="300" fill="url(#vg${uid})"/></svg>`;
+}
+function portrait(p){
+  const r=rng(p.seed||1), id='pt'+p.id, hx=-20+r()*40, hy=78+r()*14, sc=.85+r()*.3, bl=p.blur??2.5;
+  return `<svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="${id}g" cx="${P2(.3+r()*.4)}" cy="${P2(.2+r()*.2)}" r=".9"><stop offset="0" stop-color="#5a5a5f"/><stop offset="1" stop-color="#0c0c0e"/></radialGradient><filter id="${id}b"><feGaussianBlur stdDeviation="${bl}"/></filter></defs><rect width="300" height="200" fill="url(#${id}g)"/><g filter="url(#${id}b)" transform="translate(${P2(hx)} 0)"><ellipse cx="150" cy="${P2(hy)}" rx="${P2(30*sc)}" ry="${P2(36*sc)}" fill="#050506"/><path d="M60 215 C70 150 110 ${P2(hy+36*sc)} 150 ${P2(hy+36*sc)} C190 ${P2(hy+36*sc)} 230 150 240 215 Z" fill="#050506"/></g><rect width="300" height="200" fill="rgba(0,0,0,.18)"/></svg>`;
+}
+function P2(n){return Math.round(n*100)/100}
+
+/* ---------- 상태 ---------- */
+let S, epoch=0, chains={}, call=null, callSeq=0, timerId=null, ending=false, toastT=null, bannerT=null, bannerTarget=null, locked=true, eventsRan=false;
+const U={app:null, sms:{id:null}, kakao:{tab:'friends', id:null}, sb:{tab:'discover', id:null}, phone:{tab:'keypad', dial:''}, photo:null, note:null};
+const APPS=['phone','sms','kakao','sb','photos','notes'];
+
+function initState(){
+  S={sms:{}, kakao:{}, sb:{}, typing:{}, recents:[], missedNew:0, notes:[]};
+  const mk=h=>(h||[]).map(m=>({from:m.from,text:m.text,ts:Date.now()-(m.ago||0)*6e4}));
+  CONFIG.contacts.forEach(c=>['sms','kakao'].forEach(app=>{
+    const cfg=c[app]; if(!cfg) return;
+    S[app][c.id]={msgs:mk(cfg.history), unread:cfg.unread||0};
+  }));
+  CONFIG.somebody.forEach(p=>{S.sb[p.id]={msgs:mk(p.history), unread:p.unread||0, state:p.matched?'matched':'none'}});
+  (CONFIG.recents||[]).forEach(r=>{
+    const c=r.id?byId(r.id):CONFIG.contacts.find(c=>digits(c.number)===digits(r.number));
+    const number=r.number||(c&&c.number)||'';
+    S.recents.push({name:c?c.name:null, number, dir:r.dir, ts:Date.now()-(r.ago||0)*6e4, dur:r.dur||0, count:r.count||1});
+    if(r.dir==='missed'&&!r.seen) S.missedNew+=r.count||1;
+  });
+  S.notes=CONFIG.notes.map(n=>({...n,ts:Date.now()-n.ago*6e4,unlocked:false}));
+}
+
+/* ---------- 홈 / 잠금 ---------- */
+function homeBtn(app,name,svg,act){return `<button class="ic" data-act="${act}" data-app="${app}"><span class="tw"><span class="tile">${svg}</span><span class="bd" id="bd-${app}"></span></span>${name}</button>`}
+function renderHome(){
+  $('#grid').innerHTML=[
+    homeBtn('cal','캘린더',calIcon(),'deco'),homeBtn('photos','사진',IC.photos,'open'),
+    homeBtn('camera','카메라',IC.camera,'deco'),homeBtn('maps','지도',IC.maps,'deco'),
+    homeBtn('weather','날씨',IC.weather,'deco'),homeBtn('clock','시계',IC.clock,'deco'),
+    homeBtn('notes','메모',IC.notes,'open'),homeBtn('settings','설정',IC.settings,'deco')
+  ].join('');
+  const dk=a=>`<button class="ic" data-act="open" data-app="${a[0]}" aria-label="${a[1]}"><span class="tw"><span class="tile">${a[2]}</span><span class="bd" id="bd-${a[0]}"></span></span></button>`;
+  $('#dock').innerHTML=[['phone','전화',IC.phone],['sms','메시지',IC.sms],['kakao','카카오톡',IC.kakao],['sb','썸바디',IC.sb]].map(dk).join('');
+}
+function unreadSum(app){return Object.values(S[app]).reduce((a,t)=>a+t.unread,0)}
+function updateBadges(){
+  const set=(id,n)=>{const el=$('#'+id); if(el) el.textContent=n?String(n):''};
+  set('bd-sms',unreadSum('sms')); set('bd-kakao',unreadSum('kakao')); set('bd-sb',unreadSum('sb')); set('bd-phone',S.missedNew);
+  set('kk-tb',unreadSum('kakao')); set('sb-tb',unreadSum('sb'));
+}
+function renderLock(){
+  const d=new Date();
+  $('#lk-time').textContent=`${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}`;
+  $('#lk-date').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 ${DOW[d.getDay()]}요일`;
+  const all=[];
+  ['sms','kakao','sb'].forEach(app=>Object.entries(S[app]).forEach(([id,t])=>{
+    if(!t.unread) return; const m=[...t.msgs].reverse().find(m=>m.from==='them'); if(m) all.push({app,id,ts:m.ts,text:m.text});
+  }));
+  all.sort((a,b)=>b.ts-a.ts);
+  $('#lk-n').innerHTML=all.slice(0,3).map(n=>`<div class="lkc"><span class="ai">${APPICON[n.app]}</span><span class="tx"><b>${esc(dname(n.app,ent(n.app,n.id)))}</b><span>${esc(n.text)}</span></span></div>`).join('');
+}
+function unlock(){
+  if(!locked) return; locked=false; $('#lock').classList.remove('on');
+  if(!eventsRan){eventsRan=true;const e=epoch;(CONFIG.events||[]).forEach(ev=>setTimeout(()=>{if(e!==epoch)return;queue(ev.app,ev.id,ev.lines)},ev.at))}
+}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),1800)}
+function updateClock(){const d=new Date();$('#clock').textContent=`${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}`; if(locked) renderLock()}
+
+/* ---------- 앱 전환 ---------- */
+function showApp(app){
+  if(locked) unlock();
+  U.app=app; APPS.forEach(a=>$('#app-'+a).classList.toggle('on',a===app)); renderApp(app);
+}
+function goHome(){U.app=null;APPS.forEach(a=>$('#app-'+a).classList.remove('on'))}
+function renderApp(app){
+  if(app==='sms'){ if(U.sms.id) openSms(U.sms.id); else {$('#sms-list').hidden=false;$('#sms-thread').hidden=true;renderSmsList()} }
+  if(app==='kakao'){ if(U.kakao.id) openKakao(U.kakao.id); else {$('#kk-main').hidden=false;$('#kk-room').hidden=true;renderKakaoMain()} }
+  if(app==='sb'){ if(U.sb.id) openSb(U.sb.id); else {$('#sb-main').hidden=false;$('#sb-room').hidden=true;renderSbMain()} }
+  if(app==='phone') setPhoneTab(U.phone.tab);
+  if(app==='photos') renderPhotos();
+  if(app==='notes'){ if(U.note) renderNoteView(); else {$('#nt-list').hidden=false;$('#nt-view').hidden=true;renderNotes()} }
+  updateBadges();
+}
+function viewing(app,id){return U.app===app && !call && !locked && U[app].id===id}
+
+/* ---------- 메시지 엔진 (문자 · 카톡 · 썸바디 공통) ---------- */
+function pushMsg(app,id,from,text){
+  const t=S[app][id]; t.msgs.push({from,text,ts:Date.now()});
+  if(from==='them'){ if(viewing(app,id)) t.unread=0; else {t.unread++; if(!locked) notify(app,id,text); else renderLock()} }
+  refresh(app);
+}
+function refresh(app){
+  if(app==='sms'){ renderSmsList(); if(U.sms.id && !$('#sms-thread').hidden) renderBubbles('sms') }
+  else if(app==='kakao'){ renderKakaoMain(); if(U.kakao.id && !$('#kk-room').hidden) renderKakaoMsgs() }
+  else { renderSbMain(); if(U.sb.id && !$('#sb-room').hidden) renderBubbles('sb') }
+  updateBadges();
+}
+function setTyping(app,id,on){S.typing[app+id]=on;refresh(app)}
+async function say(app,id,lines){
+  const e=epoch; await sleep(500);
+  for(const t of lines){
+    if(e!==epoch) return; setTyping(app,id,true);
+    await sleep(650+Math.min(t.length*80,1800));
+    if(e!==epoch) return; setTyping(app,id,false); pushMsg(app,id,'them',t);
+    await sleep(350);
+  }
+}
+function queue(app,id,lines){if(!lines||!lines.length) return; const k=app+id; chains[k]=(chains[k]||Promise.resolve()).then(()=>say(app,id,lines))}
+function sendMsg(app,id,text){
+  text=text.trim(); if(!text) return;
+  pushMsg(app,id,'me',text);
+  const cfg=cfgOf(app,ent(app,id)), n=norm(text);
+  const rule=(cfg.rules||[]).find(r=>r.match.some(k=>n.includes(norm(k))));
+  queue(app,id,rule?rule.reply:(cfg.fallback||[]));
+}
+function notify(app,id,text){
+  bannerTarget={app,id}; const b=$('#banner');
+  b.innerHTML=`<span class="ai">${APPICON[app]}</span><span class="tx"><b>${esc(dname(app,ent(app,id)))}</b><span>${esc(text)}</span></span><em>지금</em>`;
+  b.classList.add('on'); clearTimeout(bannerT); bannerT=setTimeout(()=>b.classList.remove('on'),4200);
+}
+const lastTs=t=>t.msgs.length?t.msgs[t.msgs.length-1].ts:0;
+function lastReal(t){return [...t.msgs].reverse().find(m=>m.from!=='sys')}
+
+/* ---------- 문자 ---------- */
+function renderSmsList(){
+  const rows=CONFIG.contacts.filter(c=>c.sms).map(c=>({c,t:S.sms[c.id]})).sort((a,b)=>lastTs(b.t)-lastTs(a.t));
+  $('#sms-rows').innerHTML=rows.map(({c,t})=>{const l=lastReal(t);
+    return `<button class="sr" data-act="sms-open" data-id="${c.id}"><i class="ud" style="${t.unread?'':'visibility:hidden'}"></i>${avatar('sms',c,48)}<span class="sm"><span class="sn"><b>${esc(c.name)}</b><em>${l?esc(rel(l.ts)):''} ›</em></span><span class="sp">${l?esc(l.text):''}</span></span></button>`}).join('');
+}
+function openSms(id){
+  U.sms.id=id; S.sms[id].unread=0; const c=byId(id);
+  $('#sms-list').hidden=true; $('#sms-thread').hidden=false;
+  $('#sms-av').innerHTML=avatar('sms',c,36); $('#sms-nm').textContent=c.name;
+  const un=Object.entries(S.sms).filter(([k])=>k!==id).reduce((a,[,t])=>a+t.unread,0);
+  $('#sms-bk').textContent=un?`메시지 (${un})`:'메시지';
+  renderBubbles('sms'); updateBadges();
+}
+function renderBubbles(app){
+  const id=U[app].id, t=S[app][id]; let h='', prev=null;
+  t.msgs.forEach(m=>{
+    if(m.from==='sys'){h+=`<div class="dv">${esc(m.text)}</div>`;return}
+    if(!prev||m.ts-prev.ts>36e5||dayKey(m.ts)!==dayKey(prev.ts)) h+=`<div class="dv"><b>${dayWord(m.ts)}</b> ${fmtTime(new Date(m.ts))}</div>`;
+    h+=`<div class="b ${m.from==='me'?'me':'th'}">${esc(m.text)}</div>`; prev=m;
+  });
+  if(prev&&prev.from==='me'&&app==='sms') h+='<div class="dl">전달됨</div>';
+  if(S.typing[app+id]) h+='<div class="b th typing"><i></i><i></i><i></i></div>';
+  const box=$(app==='sms'?'#sms-msgs':'#sb-msgs'); box.innerHTML=h; box.scrollTop=box.scrollHeight;
+}
+
+/* ---------- 카카오톡 ---------- */
+function renderKakaoMain(){
+  const tab=U.kakao.tab; $('#kt-friends').classList.toggle('on',tab==='friends'); $('#kt-chats').classList.toggle('on',tab==='chats');
+  $('#kk-title').textContent=tab==='friends'?'친구':'채팅'; let h='';
+  if(tab==='friends'){
+    const list=CONFIG.contacts.filter(c=>c.kakao&&c.saved!==false);
+    h+=`<button class="krow" style="cursor:default"><span class="kav" style="background:#38383c;width:52px;height:52px;border-radius:19px">${esc(CONFIG.meName[0])}</span><span class="kmid"><b style="font-size:16px">${esc(CONFIG.meName)}</b></span></button><div class="ksec">친구 ${list.length}</div>`;
+    h+=list.map(c=>`<button class="krow" data-act="kk-open" data-id="${c.id}">${kav('kakao',c)}<span class="kmid"><b>${esc(c.name)}</b></span><span class="kmid" style="flex:none;max-width:110px;text-align:right"><span>${esc(c.kakao.status||'')}</span></span></button>`).join('');
+  } else {
+    h+=CONFIG.contacts.filter(c=>c.kakao).map(c=>({c,t:S.kakao[c.id]})).sort((a,b)=>lastTs(b.t)-lastTs(a.t)).map(({c,t})=>{const l=lastReal(t);
+      return `<button class="krow" data-act="kk-open" data-id="${c.id}">${kav('kakao',c)}<span class="kmid"><b>${esc(dname('kakao',c))}</b><span>${l?esc(l.text):''}</span></span><span class="kr"><em>${l?esc(rel(l.ts)):''}</em>${t.unread?`<span class="bd2">${t.unread}</span>`:''}</span></button>`}).join('');
+  }
+  $('#kk-rows').innerHTML=h;
+}
+function openKakao(id){
+  U.kakao.id=id; S.kakao[id].unread=0; const c=byId(id);
+  $('#kk-main').hidden=true; $('#kk-room').hidden=false; $('#kk-nm').textContent=dname('kakao',c);
+  renderKakaoMsgs(); updateBadges();
+}
+function renderKakaoMsgs(){
+  const id=U.kakao.id, c=byId(id), ms=S.kakao[id].msgs; let h='', prev=null;
+  ms.forEach((m,i)=>{
+    const next=ms[i+1];
+    if(m.from==='sys'){h+=`<div class="kdv"><span>${esc(m.text)}</span></div>`;return}
+    if(!prev||dayKey(m.ts)!==dayKey(prev.ts)) h+=`<div class="kdv"><span>${fullDay(m.ts)}</span></div>`;
+    const lastOfGroup=!next||next.from!==m.from||fmtTime(new Date(next.ts))!==fmtTime(new Date(m.ts));
+    const time=lastOfGroup?`<span class="kt">${fmtTime(new Date(m.ts))}</span>`:'';
+    if(m.from==='me') h+=`<div class="km me">${time}<div class="kbub">${esc(m.text)}</div></div>`;
+    else {
+      const first=!prev||prev.from!==m.from||dayKey(prev.ts)!==dayKey(m.ts);
+      h+=`<div class="km">${first?kav('kakao',c,'s'):'<span class="kspace"></span>'}<div class="kcol">${first?`<span class="kn">${esc(dname('kakao',c))}</span>`:''}<div class="kbr"><div class="kbub">${esc(m.text)}</div>${time}</div></div></div>`;
+    }
+    prev=m;
+  });
+  if(S.typing['kakao'+id]) h+=`<div class="km">${kav('kakao',c,'s')}<div class="kcol"><div class="kbub ktyp"><i></i><i></i><i></i></div></div></div>`;
+  const box=$('#kk-msgs'); box.innerHTML=h; box.scrollTop=box.scrollHeight;
+}
+
+/* ---------- 썸바디 ---------- */
+function renderSbMain(){
+  const tab=U.sb.tab; $('#st-discover').classList.toggle('on',tab==='discover'); $('#st-chats').classList.toggle('on',tab==='chats');
+  let h='';
+  if(tab==='discover'){
+    $('#sb-count').textContent=`반경 내 ${CONFIG.somebody.length}명`;
+    h=CONFIG.somebody.map(p=>{const st=S.sb[p.id].state;
+      const btns=st==='matched'?`<button class="pb solid" data-act="sb-open" data-id="${p.id}">대화하기</button>`
+        :st==='liked'?`<button class="pb" disabled>관심 보냄 · 응답 대기</button>`
+        :`<button class="pb" data-act="sb-like" data-id="${p.id}">관심 보내기</button><button class="pb solid" data-act="sb-open" data-id="${p.id}">대화 걸기</button>`;
+      return `<article class="pf"><div class="pf-top">${portrait(p)}<div class="pf-id"><b>${esc(p.name)}</b><span>${esc(p.dist)}</span></div></div><div class="pf-b"><span class="pf-m">${esc(p.age)}세 · 익명 프로필</span><p class="pf-bio">${esc(p.bio)}</p><div class="tags">${p.tags.map(t=>`<i>${esc(t)}</i>`).join('')}</div><div class="pfa">${btns}</div></div></article>`}).join('')+'<div style="height:18px"></div>';
+  } else {
+    $('#sb-count').textContent='대화';
+    const list=CONFIG.somebody.filter(p=>S.sb[p.id].state==='matched').map(p=>({p,t:S.sb[p.id]})).sort((a,b)=>lastTs(b.t)-lastTs(a.t));
+    h=list.length?list.map(({p,t})=>{const l=lastReal(t);return `<button class="sr" data-act="sb-open" data-id="${p.id}"><i class="ud" style="${t.unread?'':'visibility:hidden'}"></i>${avatar('sb',p,48)}<span class="sm"><span class="sn"><b>${esc(p.name)}</b><em>${esc(p.dist)}</em></span><span class="sp">${l?esc(l.text):'매칭됨'}</span></span></button>`}).join(''):'<div style="padding:28px 18px;color:#6b6b72;font-size:14px">아직 매칭된 사람이 없어요.</div>';
+  }
+  const box=$('#sb-rows'); const keep=box.scrollTop; box.innerHTML=h; box.scrollTop=keep;
+}
+function matchNow(p){
+  const st=S.sb[p.id]; if(st.state==='matched') return;
+  st.state='matched'; st.msgs.push({from:'sys',text:'매칭되었어요 · 서로 모르는 사이',ts:Date.now()});
+  refresh('sb'); queue('sb',p.id,p.opening);
+}
+function openSb(id){
+  const p=ent('sb',id), st=S.sb[id];
+  if(st.state!=='matched'){
+    st.state='matched'; st.msgs.push({from:'sys',text:'매칭되었어요 · 서로 모르는 사이',ts:Date.now()});
+    if(p.matchBack===false) st.msgs.push({from:'sys',text:'상대가 아직 메시지를 읽지 않았어요',ts:Date.now()}); else queue('sb',id,p.opening);
+  }
+  U.sb.id=id; st.unread=0; $('#sb-main').hidden=true; $('#sb-room').hidden=false;
+  $('#sb-av').innerHTML=avatar('sb',p,36); $('#sb-nm').textContent=`${p.name} · ${p.dist}`;
+  renderBubbles('sb'); updateBadges();
+}
+
+/* ---------- 전화 ---------- */
+const KEYS=[['1',''],['2','ABC'],['3','DEF'],['4','GHI'],['5','JKL'],['6','MNO'],['7','PQRS'],['8','TUV'],['9','WXYZ'],['*',''],['0','+'],['#','']];
+function renderKeypad(){$('#kp').innerHTML=KEYS.map(([k,s])=>`<button class="key" data-act="key" data-k="${k}"><b>${k}</b><small>${s}</small></button>`).join('')}
+function renderDial(){const d=U.phone.dial; $('#dial').textContent=fmtNum(d)||''; $('#delbtn').style.visibility=d?'visible':'hidden'}
+function setPhoneTab(tab){
+  U.phone.tab=tab;
+  ['recents','contacts','keypad'].forEach(t=>$('#pv-'+t).hidden=(t!==tab));
+  document.querySelectorAll('.ptabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  if(tab==='recents'){ S.missedNew=0; updateBadges(); renderRecents() }
+  if(tab==='contacts') renderContacts();
+  if(tab==='keypad') renderDial();
+}
+function renderRecents(){
+  $('#rc-rows').innerHTML=S.recents.length?S.recents.map((r,i)=>`<button class="rc ${r.dir==='missed'?'missed':''}" data-act="call-recent" data-i="${i}"><span class="mid"><span><b>${esc(r.name||fmtNum(r.number))}${r.count>1?` (${r.count})`:''}</b><small>${r.dir==='missed'?'부재중 전화':r.dir==='in'?'수신 전화':'발신 전화'}${r.dur?' · '+Math.floor(r.dur/60)+'분 '+(r.dur%60)+'초':''}</small></span><em>${esc(rel(r.ts))}</em></span></button>`).join(''):'<div style="padding:24px 16px;color:var(--t3)">통화 기록이 없어요.</div>';
+}
+function renderContacts(){
+  const list=CONFIG.contacts.filter(c=>c.saved!==false&&c.number).sort((a,b)=>a.name.localeCompare(b.name,'ko'));
+  $('#ct-rows').innerHTML=list.map(c=>`<button class="rc" data-act="call-contact" data-id="${c.id}">${avatar('sms',c,40)}<span class="mid"><span><b>${esc(c.name)}</b><small>${esc(c.number)}</small></span></span></button>`).join('');
+}
+
+/* ---------- 통화 ---------- */
+const alive=id=>call&&call.id===id;
+function startCall(number,contact,incoming){
+  if(call||ending) return; if(locked) unlock();
+  const id=++callSeq;
+  call={id,number,contact,incoming:!!incoming,state:incoming?'incoming':'dialing',lines:[],t0:0};
+  $('#call').classList.add('on'); $('#banner').classList.remove('on'); renderCall();
+  if(incoming) return;
+  const cfg=contact?contact.call:CONFIG.unknownCall;
+  (async()=>{
+    if(!cfg){ await sleep(5000); if(alive(id)) endCall(); return; }
+    await sleep(cfg.ringMs||2200); if(alive(id)) connect(id);
+  })();
+}
+function connect(id){
+  if(!alive(id)) return;
+  call.state='live'; call.t0=Date.now(); renderCall();
+  timerId=setInterval(()=>{if(!call)return;const el=$('#cl-st');if(el)el.textContent=mmss(Math.floor((Date.now()-call.t0)/1000))},400);
+  const cfg=call.contact?call.contact.call:CONFIG.unknownCall; if(!cfg) return;
+  play(id,(call.incoming&&cfg.incomingLines)||cfg.lines||[],cfg.hangupAfter);
+}
+async function play(id,lines,hang){
+  for(const ln of lines){
+    await sleep(ln.wait??1000); if(!alive(id)) return;
+    call.lines.push(ln); renderCall();
+    await sleep(Math.min(300+ln.text.length*70,2600)); if(!alive(id)) return;
+  }
+  if(hang!=null){ await sleep(hang); if(alive(id)) endCall(); }
+}
+function endCall(){
+  if(!call) return;
+  const c=call; clearInterval(timerId);
+  const dur=c.state==='live'?Math.round((Date.now()-c.t0)/1000):0;
+  S.recents.unshift({name:c.contact?c.contact.name:null,number:c.number,dir:c.incoming?(c.state==='live'?'in':'missed'):'out',ts:Date.now(),dur,count:1});
+  call=null; ending=true; renderCall(c,true);
+  setTimeout(()=>{ending=false;if(!call)$('#call').classList.remove('on'); if(U.app==='phone'&&U.phone.tab==='recents') renderRecents()},850);
+}
+function renderCall(c=call,ended){
+  if(!c) return;
+  const ct=c.contact, name=callName(ct,c.number);
+  const st=ended?'통화 종료':c.state==='dialing'?'전화 거는 중…':c.state==='incoming'?'휴대전화 수신':mmss(Math.floor((Date.now()-c.t0)/1000));
+  const shown=c.lines.slice(-3);
+  const lines=shown.map((l,i)=>{const old=i<shown.length-1?' old':'';const who=l.who||'them';
+    if(who==='sys') return `<div class="ln sys${old}"><p>${esc(l.text)}</p></div>`;
+    return `<div class="ln ${who==='me'?'me':''}${old}"><small>${who==='me'?esc(CONFIG.meName):esc(name)}</small><p>${esc(l.text)}</p></div>`}).join('');
+  const G=(p)=>`<svg viewBox="0 0 24 24"><path d="${p}"/></svg>`;
+  let bottom;
+  if(c.state==='incoming'&&!ended) bottom=`<div class="cinc"><label><button class="endbtn decl" data-act="decline" aria-label="거절">${G(PH)}</button>거절</label><label><button class="accbtn" data-act="accept" aria-label="받기">${G(PH)}</button>받기</label></div>`;
+  else bottom=`<div class="cgrid">
+    <button class="cb" data-act="tog"><i>${G('M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z')}</i>음소거</button>
+    <button class="cb" data-act="tog"><i><svg viewBox="0 0 24 24"><circle cx="5" cy="4" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="19" cy="4" r="2"/><circle cx="5" cy="11" r="2"/><circle cx="12" cy="11" r="2"/><circle cx="19" cy="11" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="12" cy="18" r="2"/><circle cx="19" cy="18" r="2"/></svg></i>키패드</button>
+    <button class="cb" data-act="tog"><i>${G('M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z')}</i>스피커</button>
+    <button class="cb" data-act="tog"><i>${G('M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z')}</i>통화 추가</button>
+    <button class="cb" data-act="tog"><i>${G('M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z')}</i>FaceTime</button>
+    <button class="cb" data-act="tog"><i>${G('M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z')}</i>연락처</button>
+    </div><div class="cend"><button class="endbtn" data-act="end" aria-label="통화 종료">${G(PH)}</button></div>`;
+  const el=$('#call');
+  el.className=(el.classList.contains('on')?'on':'')+(c.state==='incoming'?' ring':'');
+  el.innerHTML=`<div class="cl-top"><div class="cl-name">${esc(name)}</div>${(ct&&ct.saved!==false)?`<div class="cl-num">${esc(ct.number)}</div>`:''}<div class="cl-st" id="cl-st">${st}</div><div class="av cl-av" style="background:${ct?shade(ct):'#3b3b3f'}">${esc(ct?ini('sms',ct):'?')}</div></div><div class="cl-tr">${lines}</div>${bottom}`;
+}
+
+/* ---------- 사진 ---------- */
+function renderPhotos(){
+  $('#ph-sub').textContent=`${CONFIG.photos.length}장 · 성윤오의 보관함`;
+  $('#ph-grid').innerHTML='<div class="pgrid">'+CONFIG.photos.map((p,i)=>`<button class="pt" data-act="photo-open" data-i="${i}" aria-label="사진 ${i+1}">${scene(p.kind,p.seed,'g'+i)}</button>`).join('')+'</div>';
+  if(U.photo!=null) openPhoto(U.photo); else $('#pviewer').hidden=true;
+}
+function openPhoto(i){
+  const n=CONFIG.photos.length; i=(i+n)%n; U.photo=i; const p=CONFIG.photos[i];
+  $('#pviewer').hidden=false; $('#pv-img').innerHTML=scene(p.kind,p.seed,'v'+i);
+  $('#pv-info').innerHTML=`<b>${esc(p.date)}</b><span>${esc(p.place)}</span><p>${esc(p.cap)}</p>`;
+  $('#pv-count').textContent=`${i+1} / ${n}`;
+}
+
+/* ---------- 메모 ---------- */
+function renderNotes(){
+  $('#nt-rows').innerHTML=[...S.notes].sort((a,b)=>b.ts-a.ts).map(n=>`<button class="nr" data-act="note-open" data-id="${n.id}"><b>${n.locked&&!n.unlocked?'[잠김] ':''}${esc(n.title||'새로운 메모')}</b><span>${esc(rel(n.ts))} · ${n.locked&&!n.unlocked?'잠긴 메모':esc((n.text||'추가 텍스트 없음').split('\n')[0])}</span></button>`).join('')+'<div style="height:10px"></div>';
+}
+function openNote(id){U.note=id;$('#nt-list').hidden=true;$('#nt-view').hidden=false;renderNoteView()}
+function renderNoteView(){
+  const n=S.notes.find(x=>x.id===U.note); if(!n){U.note=null;return}
+  $('#nt-list').hidden=true;$('#nt-view').hidden=false;
+  if(n.locked&&!n.unlocked) $('#nt-body').innerHTML=`<div class="lkp"><svg width="34" height="34" viewBox="0 0 24 24" fill="#9b9ba1"><path d="M18 8h-1V6A5 5 0 0 0 7 6v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zM9 6a3 3 0 0 1 6 0v2H9V6z"/></svg><div>잠긴 메모예요.<br>4자리 번호를 입력하세요.</div><input id="nt-code" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="비밀번호"><button data-act="note-unlock">열기</button><small id="nt-err"></small></div>`;
+  else $('#nt-body').innerHTML=`<input class="nt-title" id="nt-title" value="${esc(n.title)}" placeholder="제목"><textarea class="nt-text" id="nt-text" placeholder="메모를 입력하세요">${esc(n.text)}</textarea>`;
+}
+
+/* ---------- 이벤트 ---------- */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]'); if(!el) return; const d=el.dataset;
+  switch(d.act){
+    case 'unlock': unlock(); break;
+    case 'open': showApp(d.app); break;
+    case 'deco': toast('이 앱은 아직 지원하지 않아요'); break;
+    case 'home': if(locked){unlock();break} if(!call) goHome(); break;
+    case 'sms-open': openSms(d.id); break;
+    case 'sms-back': U.sms.id=null; $('#sms-thread').hidden=true; $('#sms-list').hidden=false; renderSmsList(); break;
+    case 'kk-tab': U.kakao.tab=d.tab; renderKakaoMain(); break;
+    case 'kk-open': openKakao(d.id); break;
+    case 'kk-back': U.kakao.id=null; $('#kk-room').hidden=true; $('#kk-main').hidden=false; renderKakaoMain(); break;
+    case 'sb-tab': U.sb.tab=d.tab; renderSbMain(); break;
+    case 'sb-like': { const p=ent('sb',d.id); S.sb[d.id].state='liked'; toast('관심을 보냈어요'); renderSbMain(); if(p.matchBack!==false){const ep=epoch;setTimeout(()=>{if(ep===epoch)matchNow(p)},2200+Math.random()*1500)} break }
+    case 'sb-open': openSb(d.id); break;
+    case 'sb-back': U.sb.id=null; $('#sb-room').hidden=true; $('#sb-main').hidden=false; renderSbMain(); break;
+    case 'ph-tab': setPhoneTab(d.tab); break;
+    case 'key': if(U.phone.dial.length<13){U.phone.dial+=d.k; renderDial()} break;
+    case 'del': U.phone.dial=U.phone.dial.slice(0,-1); renderDial(); break;
+    case 'dial': { const n=digits(U.phone.dial); if(!n) break; startCall(n,CONFIG.contacts.find(c=>c.number&&digits(c.number)===n)||null); break }
+    case 'call-contact': { const c=byId(d.id); startCall(digits(c.number),c); break }
+    case 'call-recent': { const r=S.recents[+d.i]; const c=CONFIG.contacts.find(c=>c.number&&digits(c.number)===digits(r.number)); startCall(digits(r.number),c||null); break }
+    case 'end': case 'decline': endCall(); break;
+    case 'accept': if(call) connect(call.id); break;
+    case 'tog': el.classList.toggle('on'); break;
+    case 'photo-open': openPhoto(+d.i); break;
+    case 'photo-close': U.photo=null; $('#pviewer').hidden=true; break;
+    case 'photo-prev': openPhoto(U.photo-1); break;
+    case 'photo-next': openPhoto(U.photo+1); break;
+    case 'note-open': openNote(d.id); break;
+    case 'note-back': U.note=null; $('#nt-view').hidden=true; $('#nt-list').hidden=false; renderNotes(); break;
+    case 'note-new': { const n={id:'n'+Date.now(),title:'',text:'',ts:Date.now(),ago:0}; S.notes.unshift(n); openNote(n.id); break }
+    case 'note-unlock': { const n=S.notes.find(x=>x.id===U.note); const v=($('#nt-code').value||'').trim(); if(v===n.code){n.unlocked=true;renderNoteView()} else {$('#nt-err').textContent='번호가 맞지 않아요.'} break }
+    case 'banner': if(bannerTarget){ $('#banner').classList.remove('on'); if(call) break; showApp(bannerTarget.app); const {app,id}=bannerTarget; if(app==='sms') openSms(id); else if(app==='kakao') openKakao(id); else openSb(id) } break;
+  }
+});
+document.addEventListener('input',e=>{
+  const n=U.note&&S.notes.find(x=>x.id===U.note);
+  if(e.target.id==='nt-title'&&n){n.title=e.target.value;n.ts=Date.now()}
+  if(e.target.id==='nt-text'&&n){n.text=e.target.value;n.ts=Date.now()}
+});
+const bindForm=(form,input,go,app)=>{
+  input.addEventListener('input',()=>{const on=!!input.value.trim(); if(app==='kakao') go.classList.toggle('on',on); else go.disabled=!on});
+  form.addEventListener('submit',e=>{e.preventDefault(); const id=U[app].id; if(!id) return; sendMsg(app,id,input.value); input.value=''; if(app==='kakao') go.classList.remove('on'); else go.disabled=true; input.focus()});
+};
+bindForm($('#sms-form'),$('#sms-input'),$('#sms-go'),'sms');
+bindForm($('#kk-form'),$('#kk-input'),$('#kk-go'),'kakao');
+bindForm($('#sb-form'),$('#sb-input'),$('#sb-go'),'sb');
+document.addEventListener('keydown',e=>{
+  if(U.app!=='phone'||U.phone.tab!=='keypad'||call||locked||e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if(/^[0-9*#]$/.test(e.key)&&U.phone.dial.length<13){U.phone.dial+=e.key;renderDial()}
+  else if(e.key==='Backspace'){U.phone.dial=U.phone.dial.slice(0,-1);renderDial()}
+  else if(e.key==='Enter'){const n=digits(U.phone.dial);if(n)startCall(n,CONFIG.contacts.find(c=>c.number&&digits(c.number)===n)||null)}
+});
+$('#btn-incoming').addEventListener('click',()=>{const c=byId(CONFIG.incomingFrom)||CONFIG.contacts[0];startCall(digits(c.number),c,true)});
+$('#btn-reset').addEventListener('click',reset);
+
+function fit(){
+  const bare=innerWidth<=460; document.body.classList.toggle('bare',bare);
+  const W=bare?390:420,H=bare?844:874;
+  const aw=document.documentElement.clientWidth-32, ah=innerHeight-150;
+  const s=Math.max(.45,Math.min(1,aw/W,ah/H));
+  const f=$('#fit'); f.style.width=W*s+'px'; f.style.height=H*s+'px'; $('#phone').style.transform=`scale(${s})`;
+}
+function reset(){
+  epoch++; chains={}; clearInterval(timerId); call=null; ending=false; callSeq++; eventsRan=false;
+  $('#call').classList.remove('on'); $('#banner').classList.remove('on');
+  initState(); U.app=null; U.sms.id=null; U.kakao.id=null; U.kakao.tab='friends'; U.sb.id=null; U.sb.tab='discover'; U.phone.tab='keypad'; U.phone.dial=''; U.photo=null; U.note=null;
+  ['#sms-input','#kk-input','#sb-input'].forEach(s=>$(s).value='');
+  renderHome(); renderKeypad(); renderSmsList(); renderKakaoMain(); renderSbMain(); updateBadges(); goHome();
+  locked=true; $('#lock').classList.add('on'); renderLock(); updateClock();
+}
+addEventListener('resize',fit);
+fit(); reset(); setInterval(updateClock,20000);
+})();
+</script>
